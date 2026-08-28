@@ -86,6 +86,57 @@ const Speech = {
 Speech.init();
 
 /* ============================================================
+   Voice-Overs: vorproduzierte Audiodateien (ElevenLabs, Stimme
+   "Sarah") statt Live-Sprachsynthese. Fällt automatisch auf Speech
+   (Browser-TTS) zurück, falls eine Datei mal fehlt/nicht lädt.
+   ============================================================ */
+const Voice = {
+  toAudioFolder(folder) {
+    return folder.replace(/^logos\//, "audio/");
+  },
+
+  tryPlayFile(url) {
+    return new Promise(resolve => {
+      const audio = new Audio(url);
+      audio.playbackRate = Settings.rate;
+      let settled = false;
+      const done = ok => { if (!settled) { settled = true; resolve(ok); } };
+      audio.addEventListener("ended", () => done(true));
+      audio.addEventListener("error", () => done(false));
+      audio.play().catch(() => done(false));
+    });
+  },
+
+  async playOrSay(url, fallbackText) {
+    if (!Settings.speech) return;
+    const ok = await this.tryPlayFile(url);
+    if (!ok) Speech.say(fallbackText);
+  },
+
+  playName(club, folder) {
+    const dir = this.toAudioFolder(folder);
+    return this.playOrSay(`${dir}/${club.slug}.mp3`, club.short);
+  },
+
+  playFacts(club, folder) {
+    const dir = this.toAudioFolder(folder);
+    return this.playOrSay(`${dir}/facts-${club.slug}.mp3`, club.facts);
+  },
+
+  playWrong() {
+    return this.playOrSay("audio/phrases/falsch.mp3", "Leider falsch!");
+  },
+
+  async playCorrect(club, folder) {
+    if (!Settings.speech) return;
+    const dir = this.toAudioFolder(folder);
+    const introOk = await this.tryPlayFile("audio/phrases/richtig.mp3");
+    const nameOk = introOk ? await this.tryPlayFile(`${dir}/${club.slug}.mp3`) : false;
+    if (!introOk || !nameOk) Speech.say(`Richtig! Das ist ${club.name}.`);
+  }
+};
+
+/* ============================================================
    Klangeffekte (Web Audio API, keine Audiodateien nötig)
    ============================================================ */
 const Sound = {
@@ -301,7 +352,7 @@ const Quiz = {
     if (facts) {
       document.getElementById("facts-text").textContent = facts;
       factsPanel.hidden = false;
-      setTimeout(() => Speech.say(facts), 500);
+      setTimeout(() => Voice.playFacts(this.current.correctClub, this.league.folder), 500);
     } else {
       factsPanel.hidden = true;
     }
@@ -326,7 +377,7 @@ const Quiz = {
       speakBtn.addEventListener("click", e => {
         e.stopPropagation();
         Sound.ensureCtx();
-        Speech.say(club.short);
+        Voice.playName(club, this.league.folder);
       });
 
       row.appendChild(btn);
@@ -349,7 +400,7 @@ const Quiz = {
       confettiBurst(document.getElementById("feedback-layer"));
       this.doneSlugs.add(club.slug);
       this.updateDots();
-      Speech.say(`Richtig! Das ist ${club.name}.`);
+      Voice.playCorrect(club, this.league.folder);
 
       document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
       setTimeout(() => this.nextRound(), 2600);
@@ -364,7 +415,7 @@ const Quiz = {
       btn.classList.add("wrong");
       crestEl.classList.add("shake");
       Sound.tryAgain();
-      Speech.say("Leider falsch!");
+      Voice.playWrong();
       setTimeout(() => crestEl.classList.remove("shake"), 400);
       setTimeout(() => btn.classList.remove("wrong"), 500);
     }
@@ -426,7 +477,7 @@ const Discover = {
     document.getElementById("discover-name").textContent = club.short;
     document.getElementById("discover-league").textContent = this.filter === "all" ? club.leagueLabel : "";
     renderCrest(document.getElementById("discover-crest"), club, club.folder);
-    Speech.say(club.short);
+    Voice.playName(club, club.folder);
   },
 
   move(delta) {
@@ -436,7 +487,7 @@ const Discover = {
 
   say() {
     Sound.ensureCtx();
-    Speech.say(this.pool[this.index].short);
+    Voice.playName(this.pool[this.index], this.pool[this.index].folder);
   }
 };
 
@@ -509,7 +560,7 @@ function wireUI() {
   });
   document.getElementById("btn-facts-replay").addEventListener("click", () => {
     Sound.ensureCtx();
-    Speech.say(Quiz.current.correctClub.facts);
+    Voice.playFacts(Quiz.current.correctClub, Quiz.league.folder);
   });
   document.getElementById("btn-settings").addEventListener("click", () => showScreen("screen-settings"));
   document.getElementById("btn-settings-back").addEventListener("click", () => showScreen("screen-start"));
