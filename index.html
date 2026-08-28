@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1c8a4b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wappen-Quiz">
+<title>Wappen-Quiz</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== Startbildschirm ===== -->
+<section id="screen-start" class="screen active">
+  <div class="start-content">
+    <h1>⚽ Wappen-Quiz</h1>
+    <p class="subtitle">Kennst du alle Bundesliga-Vereine?</p>
+    <button id="btn-play" class="big-button pulse" type="button">
+      <span class="big-button-icon">▶️</span>
+      <span>Spielen</span>
+    </button>
+    <button id="btn-learn" class="big-button secondary" type="button">
+      <span class="big-button-icon">🔎</span>
+      <span>Wappen entdecken</span>
+    </button>
+  </div>
+  <button id="btn-settings" class="icon-button corner" type="button" aria-label="Einstellungen" title="Einstellungen (für Erwachsene)">⚙️</button>
+</section>
+
+<!-- ===== Einstellungen (fürs Elternteil) ===== -->
+<section id="screen-settings" class="screen">
+  <div class="panel">
+    <h2>Einstellungen</h2>
+
+    <label class="setting-row">
+      <span>Anzahl Antworten</span>
+      <select id="opt-choices">
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+      </select>
+    </label>
+
+    <label class="setting-row">
+      <span>Sound</span>
+      <input type="checkbox" id="opt-sound" checked>
+    </label>
+
+    <label class="setting-row">
+      <span>Vorlesen (Sprache)</span>
+      <input type="checkbox" id="opt-speech" checked>
+    </label>
+
+    <label class="setting-row">
+      <span>Vorlesegeschwindigkeit</span>
+      <input type="range" id="opt-rate" min="0.6" max="1.2" step="0.1" value="0.9">
+    </label>
+
+    <button id="btn-reset-progress" class="text-button" type="button">Fortschritt zurücksetzen</button>
+    <button id="btn-settings-back" class="big-button" type="button">Fertig</button>
+  </div>
+</section>
+
+<!-- ===== Quiz ===== -->
+<section id="screen-quiz" class="screen">
+  <header class="quiz-header">
+    <button id="btn-quiz-home" class="icon-button" type="button" aria-label="Zurück zum Start">🏠</button>
+    <div id="progress-dots" class="progress-dots" aria-hidden="true"></div>
+    <button id="btn-mute" class="icon-button" type="button" aria-label="Ton an/aus">🔊</button>
+  </header>
+
+  <div class="crest-stage">
+    <div id="crest" class="crest"></div>
+  </div>
+
+  <button id="btn-replay" class="replay-button" type="button" aria-label="Antworten vorlesen">
+    🔊 Antworten vorlesen
+  </button>
+
+  <div id="choices" class="choices"></div>
+
+  <div id="feedback-layer" class="feedback-layer" aria-hidden="true"></div>
+</section>
+
+<!-- ===== Entdecken (Lernmodus, ohne Quiz) ===== -->
+<section id="screen-discover" class="screen">
+  <header class="quiz-header">
+    <button id="btn-discover-home" class="icon-button" type="button" aria-label="Zurück zum Start">🏠</button>
+    <div id="discover-counter" class="discover-counter"></div>
+    <span></span>
+  </header>
+
+  <div class="crest-stage">
+    <div id="discover-crest" class="crest big"></div>
+  </div>
+
+  <div id="discover-name" class="discover-name"></div>
+
+  <div class="discover-nav">
+    <button id="btn-discover-prev" class="icon-button large" type="button" aria-label="Vorheriger Verein">⬅️</button>
+    <button id="btn-discover-say" class="icon-button large" type="button" aria-label="Namen vorlesen">🔊</button>
+    <button id="btn-discover-next" class="icon-button large" type="button" aria-label="Nächster Verein">➡️</button>
+  </div>
+</section>
+
+<!-- ===== Runde geschafft ===== -->
+<section id="screen-complete" class="screen">
+  <div class="start-content">
+    <div class="trophy">🏆</div>
+    <h1>Super gemacht!</h1>
+    <p class="subtitle">Du kennst jetzt alle Bundesliga-Wappen!</p>
+    <button id="btn-again" class="big-button pulse" type="button">
+      <span class="big-button-icon">🔁</span>
+      <span>Nochmal spielen</span>
+    </button>
+    <button id="btn-complete-home" class="big-button secondary" type="button">
+      <span class="big-button-icon">🏠</span>
+      <span>Zum Start</span>
+    </button>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

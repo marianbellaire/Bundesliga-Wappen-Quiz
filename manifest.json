@@ -1,0 +1,17 @@
+{
+  "name": "Wappen-Quiz – Bundesliga für Kinder",
+  "short_name": "Wappen-Quiz",
+  "description": "Ein Multiple-Choice-Quiz zum spielerischen Lernen der Vereinswappen der 1. Fußball-Bundesliga, mit Sprachausgabe.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#bfe9ff",
+  "theme_color": "#1c8a4b",
+  "lang": "de",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
