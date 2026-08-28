@@ -360,30 +360,57 @@ const Quiz = {
    ============================================================ */
 const Discover = {
   index: 0,
-  league: LEAGUES.bundesliga, // Entdecken-Modus zeigt aktuell die Bundesliga
+  filter: "all", // "all" | "bundesliga" | "2bundesliga"
+  pool: [], // aktuell gefilterte Liste, je Eintrag { ...club, leagueLabel, folder }
+
+  allClubs() {
+    return Object.entries(LEAGUES).flatMap(([key, league]) =>
+      league.clubs.map(c => ({ ...c, leagueKey: key, leagueLabel: league.label, folder: league.folder }))
+    );
+  },
+
+  applyFilter() {
+    const all = this.allClubs();
+    this.pool = this.filter === "all" ? all : all.filter(c => c.leagueKey === this.filter);
+    if (this.index >= this.pool.length) this.index = 0;
+  },
 
   start() {
     this.index = 0;
+    this.filter = "all";
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === "all"));
+    this.applyFilter();
     this.render();
     showScreen("screen-discover");
   },
 
+  setFilter(filter) {
+    this.filter = filter;
+    this.index = 0;
+    this.applyFilter();
+    this.render();
+    document.querySelectorAll(".filter-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.filter === filter);
+    });
+  },
+
   render() {
-    const club = this.league.clubs[this.index];
-    document.getElementById("discover-counter").textContent = `${this.index + 1} / ${this.league.clubs.length}`;
+    const club = this.pool[this.index];
+    document.getElementById("discover-counter").textContent = `${this.index + 1} / ${this.pool.length}`;
     document.getElementById("discover-name").textContent = club.short;
-    renderCrest(document.getElementById("discover-crest"), club, this.league.folder);
+    document.getElementById("discover-league").textContent = this.filter === "all" ? club.leagueLabel : "";
+    renderCrest(document.getElementById("discover-crest"), club, club.folder);
     Speech.say(club.short);
   },
 
   move(delta) {
-    this.index = (this.index + delta + this.league.clubs.length) % this.league.clubs.length;
+    this.index = (this.index + delta + this.pool.length) % this.pool.length;
     this.render();
   },
 
   say() {
     Sound.ensureCtx();
-    Speech.say(this.league.clubs[this.index].short);
+    Speech.say(this.pool[this.index].short);
   }
 };
 
@@ -479,6 +506,12 @@ function wireUI() {
   document.getElementById("btn-discover-prev").addEventListener("click", () => Discover.move(-1));
   document.getElementById("btn-discover-next").addEventListener("click", () => Discover.move(1));
   document.getElementById("btn-discover-say").addEventListener("click", () => Discover.say());
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      Sound.ensureCtx();
+      Discover.setFilter(btn.dataset.filter);
+    });
+  });
 
   document.getElementById("btn-again").addEventListener("click", () => Quiz.start(Quiz.leagueKey));
   document.getElementById("btn-complete-home").addEventListener("click", () => showScreen("screen-start"));

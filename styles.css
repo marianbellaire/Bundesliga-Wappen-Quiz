@@ -404,6 +404,15 @@ button { font-family: inherit; }
   text-align: center;
   min-height: 1.4em;
 }
+.discover-league {
+  margin-top: 2px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--gold-soft);
+  text-align: center;
+  min-height: 1.2em;
+  letter-spacing: .02em;
+}
 .discover-nav {
   margin-top: auto;
   display: flex;
@@ -411,6 +420,30 @@ button { font-family: inherit; }
   gap: 22px;
   padding-top: 20px;
 }
+
+.league-filter {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.filter-btn {
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+.filter-btn.active {
+  background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+  border-color: transparent;
+  color: #241a08;
+}
+.filter-btn:active { transform: translateY(1px); }
 
 /* ---------- Complete screen ---------- */
 .trophy { font-size: 4.4rem; filter: drop-shadow(0 8px 18px rgba(205,164,73,.35)); }
