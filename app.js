@@ -413,11 +413,16 @@ function wireUI() {
 
   document.getElementById("btn-play").addEventListener("click", () => {
     Sound.ensureCtx();
-    Quiz.start();
+    showScreen("screen-mode");
   });
   document.getElementById("btn-learn").addEventListener("click", () => {
     Sound.ensureCtx();
     Discover.start();
+  });
+  document.getElementById("btn-mode-home").addEventListener("click", () => showScreen("screen-start"));
+  document.getElementById("mode-bundesliga").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Quiz.start();
   });
   document.getElementById("btn-settings").addEventListener("click", () => showScreen("screen-settings"));
   document.getElementById("btn-settings-back").addEventListener("click", () => showScreen("screen-start"));

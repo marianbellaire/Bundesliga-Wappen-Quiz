@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 
@@ -34,6 +34,34 @@
     </button>
   </div>
   <button id="btn-settings" class="icon-button corner" type="button" aria-label="Einstellungen" title="Einstellungen (für Erwachsene)" data-icon="settings"></button>
+</section>
+
+<!-- ===== Liga-Auswahl ===== -->
+<section id="screen-mode" class="screen">
+  <header class="quiz-header">
+    <button id="btn-mode-home" class="icon-button" type="button" aria-label="Zurück zum Start" data-icon="home"></button>
+    <span></span>
+    <span></span>
+  </header>
+  <div class="mode-content">
+    <h2 class="mode-title">Welche Liga?</h2>
+    <div class="mode-grid">
+      <button id="mode-bundesliga" class="mode-tile" type="button">
+        <img src="logos/bundesliga-icon.png" alt="">
+        <span class="mode-label">Bundesliga</span>
+      </button>
+      <button class="mode-tile" type="button" disabled>
+        <img src="logos/2-bundesliga-icon.png" alt="">
+        <span class="mode-label">2. Bundesliga</span>
+        <span class="mode-badge">Bald verfügbar</span>
+      </button>
+      <button class="mode-tile" type="button" disabled>
+        <img src="logos/legenden.png" alt="">
+        <span class="mode-label">Legenden</span>
+        <span class="mode-badge">Bald verfügbar</span>
+      </button>
+    </div>
+  </div>
 </section>
 
 <!-- ===== Einstellungen (fürs Elternteil) ===== -->
@@ -132,13 +160,13 @@
   </div>
 </section>
 
-<!-- WICHTIG: die Versionsnummer (?v=9) bei jeder Änderung an einer dieser
+<!-- WICHTIG: die Versionsnummer (?v=10) bei jeder Änderung an einer dieser
      Dateien (oder an styles.css oben im <head>) um 1 hochzählen – das
      erzwingt frisches Laden trotz Service-Worker-Cache, auch wenn dieser
      selbst noch nicht aktualisiert wurde. Gleiche Nummer auch in
      service-worker.js (APP_SHELL) mitziehen. -->
-<script src="data.js?v=9"></script>
-<script src="icons.js?v=9"></script>
-<script src="app.js?v=9"></script>
+<script src="data.js?v=10"></script>
+<script src="icons.js?v=10"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>

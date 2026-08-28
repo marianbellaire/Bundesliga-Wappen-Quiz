@@ -1,17 +1,19 @@
-const CACHE_NAME = "wappenquiz-v8";
+const CACHE_NAME = "wappenquiz-v9";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=9",
-  "./app.js?v=9",
-  "./data.js?v=9",
-  "./icons.js?v=9",
+  "./styles.css?v=10",
+  "./app.js?v=10",
+  "./data.js?v=10",
+  "./icons.js?v=10",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png",
-  "./logos/bundesliga-icon.png"
+  "./logos/bundesliga-icon.png",
+  "./logos/2-bundesliga-icon.png",
+  "./logos/legenden.png"
 ];
 
 self.addEventListener("install", event => {
