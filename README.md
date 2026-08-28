@@ -1,8 +1,8 @@
-# ⚽ Wappen-Quiz
+# ⚽ Fußball Quiz
 
-Eine einfache PWA für Handy & Tablet, mit der Kinder die Vereinswappen der
-1. Fußball-Bundesliga (Saison 2026/27) spielerisch lernen – per Multiple-Choice-Quiz
-mit Bild, Ton und Sprachausgabe.
+Eine einfache PWA für Handy & Tablet, mit der Kinder Vereinswappen (Bundesliga,
+2. Bundesliga, 3. Liga – Saison 2026/27) und Fußball-Legenden spielerisch lernen –
+per Multiple-Choice-Quiz mit Bild, Ton und Sprachausgabe.
 
 ## Funktionen
 
