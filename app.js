@@ -321,12 +321,18 @@ const Quiz = {
       document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
       setTimeout(() => this.nextRound(), 2600);
     } else {
+      // Beliebig oft falsch auswählen dürfen – jedes Mal erneut Ton, Ansage
+      // und Wackel-Animation, auch bei schnell wiederholtem Tippen auf
+      // dieselbe Antwort (Animation wird per Reflow-Trick neu gestartet).
+      btn.classList.remove("wrong");
+      crestEl.classList.remove("shake");
+      void btn.offsetWidth;
+      void crestEl.offsetWidth;
       btn.classList.add("wrong");
       crestEl.classList.add("shake");
       Sound.tryAgain();
       Speech.say("Leider falsch!");
       setTimeout(() => crestEl.classList.remove("shake"), 400);
-      btn.disabled = true;
       setTimeout(() => btn.classList.remove("wrong"), 500);
     }
   },
