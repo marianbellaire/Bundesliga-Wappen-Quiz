@@ -40,6 +40,7 @@ const Speech = {
       const voices = this.germanVoices();
       this.voice =
         (Settings.voiceURI && voices.find(v => v.voiceURI === Settings.voiceURI)) ||
+        voices.find(v => /anna/i.test(v.name)) ||
         voices.find(v => /google/i.test(v.name)) ||
         voices.find(v => /natürlich|natural|online|enhanced|premium/i.test(v.name)) ||
         voices.find(v => v.lang === "de-DE") ||
