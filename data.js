@@ -85,6 +85,36 @@ const LEAGUES = {
         abbr: "FW", colors: ["#DD0000", "#000000"], file: "walter.webp",
         facts: "Dieser Spieler kommt aus Deutschland und blieb sein ganzes Leben lang bei einem einzigen Verein: dem 1. FC Kaiserslautern. Als Kapitän führte er die deutsche Nationalmannschaft 1954 zum ersten deutschen Weltmeistertitel, dem berühmten „Wunder von Bern”."
       },
+      {
+        slug: "klose", name: "Miroslav Klose", short: "Miroslav Klose",
+        abbr: "MK", colors: ["#0C1C3D", "#DD0000"], file: "klose.png",
+        facts: "Dieser Spieler kommt aus Deutschland und ist der beste Torschütze in der Geschichte der Fußball-Weltmeisterschaften. Er spielte unter anderem für Werder Bremen und den FC Bayern München. Mit 16 WM-Toren stellte er 2014 einen neuen Rekord auf, im selben Jahr wurde er mit Deutschland Weltmeister."
+      },
+      {
+        slug: "messi", name: "Lionel Messi", short: "Lionel Messi",
+        abbr: "M10", colors: ["#75AADB", "#FFFFFF"], file: "messi.png",
+        facts: "Dieser Spieler kommt aus Argentinien und gewann den Ballon d'Or, die Auszeichnung für den besten Fußballer der Welt, rekordverdächtige achtmal. Fast seine ganze Karriere spielte er für den FC Barcelona. Mit Argentinien wurde er 2022 endlich Weltmeister."
+      },
+      {
+        slug: "ronaldo", name: "Cristiano Ronaldo", short: "Cristiano Ronaldo",
+        abbr: "CR7", colors: ["#FF0000", "#046A38"], file: "ronaldo.png",
+        facts: "Dieser Spieler kommt aus Portugal und gewann den Ballon d'Or fünfmal. Er spielte unter anderem für Manchester United, Real Madrid und Juventus Turin und wurde fünfmal Champions-League-Sieger. Mit Portugal gewann er 2016 die Europameisterschaft."
+      },
+      {
+        slug: "beckham", name: "David Beckham", short: "David Beckham",
+        abbr: "DB7", colors: ["#0033A0", "#DA291C"], file: "beckham.png",
+        facts: "Dieser Spieler kommt aus England und ist berühmt für seine präzisen Freistöße und Flanken. Er spielte unter anderem für Manchester United und Real Madrid und gewann 1999 mit Manchester United gleich drei große Titel in einem Jahr."
+      },
+      {
+        slug: "buffon", name: "Gianluigi Buffon", short: "Gianluigi Buffon",
+        abbr: "GB", colors: ["#0066CC", "#FFFFFF"], file: "buffon.png",
+        facts: "Dieser Spieler kommt aus Italien und war einer der besten Torhüter der Fußballgeschichte. Fast seine gesamte Karriere spielte er für Juventus Turin. Mit Italien wurde er 2006 Weltmeister."
+      },
+      {
+        slug: "maradona", name: "Diego Maradona", short: "Diego Maradona",
+        abbr: "DM", colors: ["#75AADB", "#FFFFFF"], file: "maradona.png",
+        facts: "Dieser Spieler kommt aus Argentinien und gilt für viele als einer der größten Fußballer aller Zeiten. Er spielte unter anderem für den FC Barcelona und den SSC Neapel. Mit Argentinien wurde er 1986 Weltmeister und schoss dabei das berühmte „Jahrhunderttor” gegen England."
+      },
     ]
   }
 };
