@@ -282,6 +282,18 @@ const Quiz = {
     crestEl.classList.remove("bounce", "shake");
     renderCrest(crestEl, this.current.correctClub, this.league.folder);
 
+    document.getElementById("hint-label").textContent = this.league.promptLabel || "Wer oder was ist das?";
+
+    const factsPanel = document.getElementById("facts-panel");
+    const facts = this.current.correctClub.facts;
+    if (facts) {
+      document.getElementById("facts-text").textContent = facts;
+      factsPanel.hidden = false;
+      setTimeout(() => Speech.say(facts), 500);
+    } else {
+      factsPanel.hidden = true;
+    }
+
     const wrap = document.getElementById("choices");
     wrap.innerHTML = "";
     this.current.options.forEach(club => {
@@ -350,7 +362,7 @@ const Quiz = {
     Sound.fanfare();
     confettiBurst(document.getElementById("feedback-layer"));
     document.getElementById("complete-subtitle").textContent =
-      `Du kennst jetzt alle ${this.league.label}-Wappen!`;
+      this.league.completeText || `Du kennst jetzt alle ${this.league.label}-Einträge!`;
     showScreen("screen-complete");
   }
 };
@@ -466,6 +478,14 @@ function wireUI() {
   document.getElementById("mode-2bundesliga").addEventListener("click", () => {
     Sound.ensureCtx();
     Quiz.start("2bundesliga");
+  });
+  document.getElementById("mode-legenden").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Quiz.start("legenden");
+  });
+  document.getElementById("btn-facts-replay").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Speech.say(Quiz.current.correctClub.facts);
   });
   document.getElementById("btn-settings").addEventListener("click", () => showScreen("screen-settings"));
   document.getElementById("btn-settings-back").addEventListener("click", () => showScreen("screen-start"));

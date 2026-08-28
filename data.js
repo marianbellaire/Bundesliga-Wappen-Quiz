@@ -1,11 +1,15 @@
-// Ligen & Vereine, Saison 2026/27.
-// Jeder Verein hat ein "file": der Dateiname des Wappens im jeweiligen
-// Liga-Ordner unter logos/ (siehe "folder" pro Liga).
-// Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Wappen-Bild fehlt).
+// Ligen/Kategorien & ihre Einträge (Vereine oder – bei "legenden" – Spieler).
+// Jeder Eintrag hat ein "file": der Dateiname des Bildes im jeweiligen
+// Ordner unter logos/ (siehe "folder" pro Kategorie).
+// Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Bild fehlt).
+// "facts": optionaler Text, der bei Rundenstart vorgelesen wird (aktuell nur
+// bei "legenden" genutzt) – die Hinweise, an denen man die Person erkennt.
 const LEAGUES = {
   bundesliga: {
     label: "Bundesliga",
     folder: "logos/Bundesliga",
+    promptLabel: "Welcher Verein ist das?",
+    completeText: "Du kennst jetzt alle Bundesliga-Wappen!",
     clubs: [
       { slug: "bayern",        name: "FC Bayern München",     short: "Bayern München",   abbr: "FCB", colors: ["#DC052D", "#0C1C3D"], file: "bayern.png" },
       { slug: "dortmund",      name: "Borussia Dortmund",     short: "Dortmund",         abbr: "BVB", colors: ["#FDE100", "#000000"], file: "dortmund.png" },
@@ -31,6 +35,8 @@ const LEAGUES = {
   "2bundesliga": {
     label: "2. Bundesliga",
     folder: "logos/2. Bundesliga",
+    promptLabel: "Welcher Verein ist das?",
+    completeText: "Du kennst jetzt alle Wappen der 2. Bundesliga!",
     clubs: [
       { slug: "magdeburg",       name: "1. FC Magdeburg",        short: "Magdeburg",        abbr: "FCM", colors: ["#004B93", "#FFFFFF"], file: "1-fc-magdeburg-logo-footylogos.png" },
       { slug: "bielefeld",       name: "Arminia Bielefeld",      short: "Bielefeld",        abbr: "DSC", colors: ["#000000", "#4A90D9"], file: "arminia-bielefeld-logo-footylogos.png" },
@@ -50,6 +56,35 @@ const LEAGUES = {
       { slug: "bochum",          name: "VfL Bochum",             short: "Bochum",           abbr: "VFL", colors: ["#004C9E", "#FFFFFF"], file: "vfl-bochum-logo-footylogos.png" },
       { slug: "osnabrueck",      name: "VfL Osnabrück",          short: "Osnabrück",        abbr: "OSN", colors: ["#6A1B6E", "#FFFFFF"], file: "vfl-osnabruck-logo-footylogos.png" },
       { slug: "wolfsburg",       name: "VfL Wolfsburg",          short: "Wolfsburg",        abbr: "WOB", colors: ["#65B32E", "#FFFFFF"], file: "vfl-wolfsburg-logo-footylogos.png" },
+    ]
+  },
+
+  legenden: {
+    label: "Legenden",
+    folder: "logos/Legenden",
+    promptLabel: "Wer ist das?",
+    completeText: "Du kennst jetzt alle Fußball-Legenden!",
+    clubs: [
+      {
+        slug: "beckenbauer", name: "Franz Beckenbauer", short: "Franz Beckenbauer",
+        abbr: "FB", colors: ["#DC052D", "#0C1C3D"], file: "beckenbauer.png",
+        facts: "Dieser Spieler kommt aus Deutschland und wird „der Kaiser” genannt. Er spielte fast seine ganze Karriere für den FC Bayern München und wurde 1974 mit Deutschland als Kapitän Weltmeister. Als Trainer gewann er den Titel 1990 sogar noch einmal."
+      },
+      {
+        slug: "pele", name: "Pelé", short: "Pelé",
+        abbr: "P", colors: ["#FCDF00", "#009739"], file: "pele.png",
+        facts: "Dieser Spieler kommt aus Brasilien und gilt für viele als der beste Fußballer aller Zeiten. Fast seine ganze Karriere spielte er für den Verein FC Santos. Mit Brasilien wurde er dreimal Weltmeister: 1958, 1962 und 1970."
+      },
+      {
+        slug: "ronaldinho", name: "Ronaldinho", short: "Ronaldinho",
+        abbr: "R10", colors: ["#A50044", "#004D98"], file: "ronaldinho.png",
+        facts: "Dieser Spieler kommt aus Brasilien und ist berühmt für seine Tricks und sein Lächeln auf dem Platz. Er spielte unter anderem für den FC Barcelona. Mit Brasilien wurde er 2002 Weltmeister, und 2005 wurde er zum besten Fußballer der Welt gewählt."
+      },
+      {
+        slug: "walter", name: "Fritz Walter", short: "Fritz Walter",
+        abbr: "FW", colors: ["#DD0000", "#000000"], file: "walter.webp",
+        facts: "Dieser Spieler kommt aus Deutschland und blieb sein ganzes Leben lang bei einem einzigen Verein: dem 1. FC Kaiserslautern. Als Kapitän führte er die deutsche Nationalmannschaft 1954 zum ersten deutschen Weltmeistertitel, dem berühmten „Wunder von Bern”."
+      },
     ]
   }
 };
