@@ -1,65 +1,39 @@
-"""Erzeugt einfache App-Icons (Fußball-Motiv) fürs Wappen-Quiz, ohne externe Assets."""
-from PIL import Image, ImageDraw
-import math, os
+"""Erzeugt die App-Icons aus dem echten Bundesliga-Logo (logos/bundesliga-icon.png)."""
+from PIL import Image
+import os
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "icons")
+ROOT = os.path.join(os.path.dirname(__file__), "..")
+SRC = os.path.join(ROOT, "logos", "bundesliga-icon.png")
+OUT = os.path.join(ROOT, "icons")
 os.makedirs(OUT, exist_ok=True)
 
-GOLD = "#cda449"
-GOLD_SOFT = "#e6c374"
+RED = (209, 2, 20, 255)  # Bundesliga-Rot, aus dem Logo selbst gesampelt
 
-def draw_ball(draw, cx, cy, r):
-    # Goldener Ball-Umriss auf dunklem Grund (edles Emblem statt Comic-Fußball)
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#171f28", outline=GOLD, width=max(3, int(r // 16)))
-    # zentrales goldenes Fünfeck
-    pent = []
-    for i in range(5):
-        ang = -math.pi / 2 + i * 2 * math.pi / 5
-        pent.append((cx + r * 0.34 * math.cos(ang), cy + r * 0.34 * math.sin(ang)))
-    draw.polygon(pent, fill=GOLD_SOFT)
-    # umliegende Linien, angedeutet
-    for i in range(5):
-        ang = -math.pi / 2 + i * 2 * math.pi / 5
-        x1 = cx + r * 0.34 * math.cos(ang)
-        y1 = cy + r * 0.34 * math.sin(ang)
-        ang2 = ang + math.pi / 5
-        x2 = cx + r * 0.72 * math.cos(ang2)
-        y2 = cy + r * 0.72 * math.sin(ang2)
-        draw.line([x1, y1, x2, y2], fill=GOLD, width=max(2, int(r // 26)))
+def square_canvas(scale=1.0):
+    """Bundesliga-Icon zentriert auf ein quadratisches, komplett rotes Canvas –
+    `scale` verkleinert das Motiv zusätzlich (Sicherheitsrand für maskable icons)."""
+    icon = Image.open(SRC).convert("RGBA")
+    size = max(icon.size)
+    canvas = Image.new("RGBA", (size, size), RED)
 
-def make(size, maskable=False, fname=None):
-    img = Image.new("RGB", (size, size))
-    draw = ImageDraw.Draw(img)
-    # Dunkler, edler Verlauf (passend zum App-Design) mit sanftem Glow im Zentrum
-    cx0, cy0 = size / 2, size * 0.46
-    max_d = math.hypot(size, size) / 2
-    top = (10, 14, 18)      # #0a0e12
-    glow = (40, 52, 66)     # gedeckter Glow-Ton
-    px = img.load()
-    for y in range(size):
-        for x in range(size):
-            d = math.hypot(x - cx0, y - cy0) / max_d
-            t = min(1.0, d)
-            c = tuple(int(a + (b - a) * (1 - t)) for a, b in zip(top, glow))
-            px[x, y] = c
+    if scale != 1.0:
+        w, h = icon.size
+        icon = icon.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
 
-    pad = size * (0.18 if maskable else 0.06)
-    r = (size - 2 * pad) * 0.30
-    draw_ball(draw, size / 2, size * 0.52, r)
+    x = (size - icon.width) // 2
+    y = (size - icon.height) // 2
+    canvas.alpha_composite(icon, (x, y))
+    return canvas
 
-    if not maskable:
-        # abgerundete Ecken für "any"-Icon
-        mask = Image.new("L", (size, size), 0)
-        mdraw = ImageDraw.Draw(mask)
-        radius = int(size * 0.22)
-        mdraw.rounded_rectangle([0, 0, size, size], radius=radius, fill=255)
-        out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-        out.paste(img, (0, 0), mask)
-        out.save(fname)
-    else:
-        img.save(fname)
+def save(canvas, px, fname):
+    canvas.resize((px, px), Image.LANCZOS).convert("RGBA").save(os.path.join(OUT, fname))
 
-make(192, False, os.path.join(OUT, "icon-192.png"))
-make(512, False, os.path.join(OUT, "icon-512.png"))
-make(512, True, os.path.join(OUT, "icon-maskable-512.png"))
+base = square_canvas(scale=1.0)
+save(base, 192, "icon-192.png")
+save(base, 512, "icon-512.png")
+save(base, 180, "apple-touch-icon.png")
+
+maskable = square_canvas(scale=0.72)  # mehr Rand, damit Android-Masken nichts abschneiden
+save(maskable, 512, "icon-maskable-512.png")
+
 print("Icons erzeugt in", OUT)

@@ -1,6 +1,6 @@
 {
-  "name": "Wappen-Quiz – Bundesliga für Kinder",
-  "short_name": "Wappen-Quiz",
+  "name": "Bundesliga Quiz",
+  "short_name": "Bundesliga Quiz",
   "description": "Ein Multiple-Choice-Quiz zum spielerischen Lernen der Vereinswappen der 1. Fußball-Bundesliga, mit Sprachausgabe.",
   "start_url": "./index.html",
   "scope": "./",
