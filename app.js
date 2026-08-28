@@ -143,24 +143,29 @@ const Sound = {
 /* ============================================================
    Wappen-Darstellung: echtes Bild falls vorhanden, sonst Platzhalter
    ============================================================ */
-const logoAvailability = new Map(); // slug -> true/false
+const logoAvailability = new Map(); // "folder/file" -> true/false
 
-function checkLogo(slug) {
-  if (logoAvailability.has(slug)) return Promise.resolve(logoAvailability.get(slug));
+function logoUrl(folder, club) {
+  return `${folder}/${club.file || club.slug + ".png"}`;
+}
+
+function checkLogo(url) {
+  if (logoAvailability.has(url)) return Promise.resolve(logoAvailability.get(url));
   return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => { logoAvailability.set(slug, true); resolve(true); };
-    img.onerror = () => { logoAvailability.set(slug, false); resolve(false); };
-    img.src = `logos/${slug}.png`;
+    img.onload = () => { logoAvailability.set(url, true); resolve(true); };
+    img.onerror = () => { logoAvailability.set(url, false); resolve(false); };
+    img.src = url;
   });
 }
 
-async function renderCrest(el, club) {
+async function renderCrest(el, club, folder) {
   el.style.background = "";
   el.textContent = "";
-  const hasLogo = await checkLogo(club.slug);
+  const url = logoUrl(folder, club);
+  const hasLogo = await checkLogo(url);
   if (hasLogo) {
-    el.style.backgroundImage = `url("logos/${club.slug}.png")`;
+    el.style.backgroundImage = `url("${url}")`;
     el.style.backgroundColor = "#ffffff";
   } else {
     const [c1, c2] = club.colors;
@@ -200,20 +205,24 @@ function showScreen(id) {
    Quiz-Logik
    ============================================================ */
 const Quiz = {
+  league: null,
+  leagueKey: null,
   bag: [],
   doneSlugs: new Set(),
   current: null,
   locked: false,
 
   refillBag() {
-    this.bag = CLUBS.map(c => c.slug);
+    this.bag = this.league.clubs.map(c => c.slug);
     for (let i = this.bag.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [this.bag[i], this.bag[j]] = [this.bag[j], this.bag[i]];
     }
   },
 
-  start() {
+  start(leagueKey) {
+    this.leagueKey = leagueKey;
+    this.league = LEAGUES[leagueKey];
     this.doneSlugs.clear();
     this.refillBag();
     this.renderDots();
@@ -224,7 +233,7 @@ const Quiz = {
   renderDots() {
     const wrap = document.getElementById("progress-dots");
     wrap.innerHTML = "";
-    CLUBS.forEach(c => {
+    this.league.clubs.forEach(c => {
       const d = document.createElement("span");
       d.className = "dot" + (this.doneSlugs.has(c.slug) ? " done" : "");
       d.dataset.slug = c.slug;
@@ -239,7 +248,7 @@ const Quiz = {
   },
 
   nextRound() {
-    if (this.doneSlugs.size >= CLUBS.length) {
+    if (this.doneSlugs.size >= this.league.clubs.length) {
       this.finish();
       return;
     }
@@ -249,9 +258,9 @@ const Quiz = {
     let idx = this.bag.findIndex(s => !this.doneSlugs.has(s));
     if (idx === -1) idx = 0;
     const slug = this.bag.splice(idx, 1)[0];
-    const correctClub = CLUBS.find(c => c.slug === slug);
+    const correctClub = this.league.clubs.find(c => c.slug === slug);
 
-    const pool = CLUBS.filter(c => c.slug !== slug);
+    const pool = this.league.clubs.filter(c => c.slug !== slug);
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -271,7 +280,7 @@ const Quiz = {
   renderRound() {
     const crestEl = document.getElementById("crest");
     crestEl.classList.remove("bounce", "shake");
-    renderCrest(crestEl, this.current.correctClub);
+    renderCrest(crestEl, this.current.correctClub, this.league.folder);
 
     const wrap = document.getElementById("choices");
     wrap.innerHTML = "";
@@ -340,6 +349,8 @@ const Quiz = {
   finish() {
     Sound.fanfare();
     confettiBurst(document.getElementById("feedback-layer"));
+    document.getElementById("complete-subtitle").textContent =
+      `Du kennst jetzt alle ${this.league.label}-Wappen!`;
     showScreen("screen-complete");
   }
 };
@@ -349,6 +360,7 @@ const Quiz = {
    ============================================================ */
 const Discover = {
   index: 0,
+  league: LEAGUES.bundesliga, // Entdecken-Modus zeigt aktuell die Bundesliga
 
   start() {
     this.index = 0;
@@ -357,21 +369,21 @@ const Discover = {
   },
 
   render() {
-    const club = CLUBS[this.index];
-    document.getElementById("discover-counter").textContent = `${this.index + 1} / ${CLUBS.length}`;
+    const club = this.league.clubs[this.index];
+    document.getElementById("discover-counter").textContent = `${this.index + 1} / ${this.league.clubs.length}`;
     document.getElementById("discover-name").textContent = club.short;
-    renderCrest(document.getElementById("discover-crest"), club);
+    renderCrest(document.getElementById("discover-crest"), club, this.league.folder);
     Speech.say(club.short);
   },
 
   move(delta) {
-    this.index = (this.index + delta + CLUBS.length) % CLUBS.length;
+    this.index = (this.index + delta + this.league.clubs.length) % this.league.clubs.length;
     this.render();
   },
 
   say() {
     Sound.ensureCtx();
-    Speech.say(CLUBS[this.index].short);
+    Speech.say(this.league.clubs[this.index].short);
   }
 };
 
@@ -422,7 +434,11 @@ function wireUI() {
   document.getElementById("btn-mode-home").addEventListener("click", () => showScreen("screen-start"));
   document.getElementById("mode-bundesliga").addEventListener("click", () => {
     Sound.ensureCtx();
-    Quiz.start();
+    Quiz.start("bundesliga");
+  });
+  document.getElementById("mode-2bundesliga").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Quiz.start("2bundesliga");
   });
   document.getElementById("btn-settings").addEventListener("click", () => showScreen("screen-settings"));
   document.getElementById("btn-settings-back").addEventListener("click", () => showScreen("screen-start"));
@@ -450,7 +466,7 @@ function wireUI() {
   });
   document.getElementById("btn-reset-progress").addEventListener("click", () => {
     Quiz.doneSlugs.clear();
-    Quiz.renderDots();
+    if (Quiz.league) Quiz.renderDots();
   });
 
   document.getElementById("btn-quiz-home").addEventListener("click", () => showScreen("screen-start"));
@@ -464,7 +480,7 @@ function wireUI() {
   document.getElementById("btn-discover-next").addEventListener("click", () => Discover.move(1));
   document.getElementById("btn-discover-say").addEventListener("click", () => Discover.say());
 
-  document.getElementById("btn-again").addEventListener("click", () => Quiz.start());
+  document.getElementById("btn-again").addEventListener("click", () => Quiz.start(Quiz.leagueKey));
   document.getElementById("btn-complete-home").addEventListener("click", () => showScreen("screen-start"));
 }
 

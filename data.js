@@ -1,23 +1,55 @@
-// Vereine der Fußball-Bundesliga, Saison 2026/27
-// slug -> wird auch als Dateiname für echte Wappen genutzt: logos/<slug>.png
-// Farben werden nur für die Platzhalter-Embleme benutzt (bis echte Wappen-Bilder ergänzt werden).
-const CLUBS = [
-  { slug: "bayern",        name: "FC Bayern München",     short: "Bayern München",   abbr: "FCB", colors: ["#DC052D", "#0C1C3D"] },
-  { slug: "dortmund",      name: "Borussia Dortmund",     short: "Dortmund",         abbr: "BVB", colors: ["#FDE100", "#000000"] },
-  { slug: "leipzig",       name: "RB Leipzig",            short: "Leipzig",          abbr: "RBL", colors: ["#DD0741", "#FFFFFF"] },
-  { slug: "stuttgart",     name: "VfB Stuttgart",         short: "Stuttgart",        abbr: "VfB", colors: ["#E32219", "#FFFFFF"] },
-  { slug: "hoffenheim",    name: "TSG 1899 Hoffenheim",   short: "Hoffenheim",       abbr: "TSG", colors: ["#1C63B7", "#FFFFFF"] },
-  { slug: "leverkusen",    name: "Bayer 04 Leverkusen",   short: "Leverkusen",       abbr: "B04", colors: ["#E32219", "#000000"] },
-  { slug: "freiburg",      name: "SC Freiburg",           short: "Freiburg",         abbr: "SCF", colors: ["#000000", "#E30613"] },
-  { slug: "frankfurt",     name: "Eintracht Frankfurt",   short: "Frankfurt",        abbr: "SGE", colors: ["#E1000F", "#000000"] },
-  { slug: "augsburg",      name: "FC Augsburg",           short: "Augsburg",         abbr: "FCA", colors: ["#BA3733", "#00953D"] },
-  { slug: "mainz",         name: "1. FSV Mainz 05",       short: "Mainz 05",         abbr: "M05", colors: ["#C3141E", "#FFFFFF"] },
-  { slug: "union-berlin",  name: "1. FC Union Berlin",    short: "Union Berlin",     abbr: "FCU", colors: ["#EB1923", "#FFCC00"] },
-  { slug: "gladbach",      name: "Borussia Mönchengladbach", short: "Mönchengladbach", abbr: "BMG", colors: ["#000000", "#00953D"] },
-  { slug: "hamburg",       name: "Hamburger SV",          short: "Hamburger SV",     abbr: "HSV", colors: ["#00224F", "#FFFFFF"] },
-  { slug: "koeln",         name: "1. FC Köln",            short: "Köln",             abbr: "FCK", colors: ["#ED1C24", "#FFFFFF"] },
-  { slug: "bremen",        name: "SV Werder Bremen",      short: "Werder Bremen",    abbr: "SVW", colors: ["#009036", "#FFFFFF"] },
-  { slug: "schalke",       name: "FC Schalke 04",         short: "Schalke 04",       abbr: "S04", colors: ["#004C9B", "#FFFFFF"] },
-  { slug: "elversberg",    name: "SV Elversberg",         short: "Elversberg",       abbr: "SVE", colors: ["#000000", "#1C63B7"] },
-  { slug: "paderborn",     name: "SC Paderborn 07",       short: "Paderborn",        abbr: "SCP", colors: ["#00509F", "#000000"] },
-];
+// Ligen & Vereine, Saison 2026/27.
+// Jeder Verein hat ein "file": der Dateiname des Wappens im jeweiligen
+// Liga-Ordner unter logos/ (siehe "folder" pro Liga).
+// Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Wappen-Bild fehlt).
+const LEAGUES = {
+  bundesliga: {
+    label: "Bundesliga",
+    folder: "logos/Bundesliga",
+    clubs: [
+      { slug: "bayern",        name: "FC Bayern München",     short: "Bayern München",   abbr: "FCB", colors: ["#DC052D", "#0C1C3D"], file: "bayern.png" },
+      { slug: "dortmund",      name: "Borussia Dortmund",     short: "Dortmund",         abbr: "BVB", colors: ["#FDE100", "#000000"], file: "dortmund.png" },
+      { slug: "leipzig",       name: "RB Leipzig",            short: "Leipzig",          abbr: "RBL", colors: ["#DD0741", "#FFFFFF"], file: "leipzig.png" },
+      { slug: "stuttgart",     name: "VfB Stuttgart",         short: "Stuttgart",        abbr: "VfB", colors: ["#E32219", "#FFFFFF"], file: "stuttgart.png" },
+      { slug: "hoffenheim",    name: "TSG 1899 Hoffenheim",   short: "Hoffenheim",       abbr: "TSG", colors: ["#1C63B7", "#FFFFFF"], file: "hoffenheim.png" },
+      { slug: "leverkusen",    name: "Bayer 04 Leverkusen",   short: "Leverkusen",       abbr: "B04", colors: ["#E32219", "#000000"], file: "leverkusen.png" },
+      { slug: "freiburg",      name: "SC Freiburg",           short: "Freiburg",         abbr: "SCF", colors: ["#000000", "#E30613"], file: "freiburg.png" },
+      { slug: "frankfurt",     name: "Eintracht Frankfurt",   short: "Frankfurt",        abbr: "SGE", colors: ["#E1000F", "#000000"], file: "frankfurt.png" },
+      { slug: "augsburg",      name: "FC Augsburg",           short: "Augsburg",         abbr: "FCA", colors: ["#BA3733", "#00953D"], file: "augsburg.png" },
+      { slug: "mainz",         name: "1. FSV Mainz 05",       short: "Mainz 05",         abbr: "M05", colors: ["#C3141E", "#FFFFFF"], file: "mainz.png" },
+      { slug: "union-berlin",  name: "1. FC Union Berlin",    short: "Union Berlin",     abbr: "FCU", colors: ["#EB1923", "#FFCC00"], file: "union-berlin.png" },
+      { slug: "gladbach",      name: "Borussia Mönchengladbach", short: "Mönchengladbach", abbr: "BMG", colors: ["#000000", "#00953D"], file: "gladbach.png" },
+      { slug: "hamburg",       name: "Hamburger SV",          short: "Hamburger SV",     abbr: "HSV", colors: ["#00224F", "#FFFFFF"], file: "hamburg.png" },
+      { slug: "koeln",         name: "1. FC Köln",            short: "Köln",             abbr: "FCK", colors: ["#ED1C24", "#FFFFFF"], file: "koeln.png" },
+      { slug: "bremen",        name: "SV Werder Bremen",      short: "Werder Bremen",    abbr: "SVW", colors: ["#009036", "#FFFFFF"], file: "bremen.png" },
+      { slug: "schalke",       name: "FC Schalke 04",         short: "Schalke 04",       abbr: "S04", colors: ["#004C9B", "#FFFFFF"], file: "schalke.png" },
+      { slug: "elversberg",    name: "SV Elversberg",         short: "Elversberg",       abbr: "SVE", colors: ["#000000", "#1C63B7"], file: "elversberg.png" },
+      { slug: "paderborn",     name: "SC Paderborn 07",       short: "Paderborn",        abbr: "SCP", colors: ["#00509F", "#000000"], file: "paderborn.png" },
+    ]
+  },
+
+  "2bundesliga": {
+    label: "2. Bundesliga",
+    folder: "logos/2. Bundesliga",
+    clubs: [
+      { slug: "magdeburg",       name: "1. FC Magdeburg",        short: "Magdeburg",        abbr: "FCM", colors: ["#004B93", "#FFFFFF"], file: "1-fc-magdeburg-logo-footylogos.png" },
+      { slug: "bielefeld",       name: "Arminia Bielefeld",      short: "Bielefeld",        abbr: "DSC", colors: ["#000000", "#4A90D9"], file: "arminia-bielefeld-logo-footylogos.png" },
+      { slug: "dresden",         name: "Dynamo Dresden",         short: "Dynamo Dresden",   abbr: "SGD", colors: ["#F7CF00", "#000000"], file: "dynamo-dresden-logo-footylogos.png" },
+      { slug: "braunschweig",    name: "Eintracht Braunschweig", short: "Braunschweig",     abbr: "EBS", colors: ["#F6A800", "#0A2B6B"], file: "eintracht-braunschweig-logo-footylogos.png" },
+      { slug: "cottbus",         name: "Energie Cottbus",        short: "Energie Cottbus",  abbr: "FCE", colors: ["#E2001A", "#FFFFFF"], file: "energie-cottbus-logo-footylogos.png" },
+      { slug: "heidenheim",      name: "1. FC Heidenheim",       short: "Heidenheim",       abbr: "FCH", colors: ["#C8102E", "#0A2C56"], file: "fc-heidenheim-logo-footylogos.png" },
+      { slug: "kaiserslautern",  name: "1. FC Kaiserslautern",   short: "Kaiserslautern",   abbr: "FCK", colors: ["#C8102E", "#FFFFFF"], file: "fc-kaiserslautern-logo-footylogos.png" },
+      { slug: "nuernberg",       name: "1. FC Nürnberg",         short: "Nürnberg",         abbr: "FCN", colors: ["#8B1538", "#000000"], file: "fc-nurnberg-logo-footylogos.png" },
+      { slug: "stpauli",         name: "FC St. Pauli",           short: "St. Pauli",        abbr: "FCS", colors: ["#5B3A29", "#FFFFFF"], file: "fc-st-pauli-logo-footylogos.png" },
+      { slug: "hannover",        name: "Hannover 96",            short: "Hannover 96",      abbr: "H96", colors: ["#00843D", "#000000"], file: "hannover-96-logo-footylogos.png" },
+      { slug: "hertha",          name: "Hertha BSC",             short: "Hertha BSC",       abbr: "BSC", colors: ["#004B9B", "#FFFFFF"], file: "hertha-bsc-logo-footylogos.png" },
+      { slug: "kiel",            name: "Holstein Kiel",          short: "Holstein Kiel",    abbr: "KSV", colors: ["#00447C", "#E2001A"], file: "holstein-kiel-logo-footylogos.png" },
+      { slug: "karlsruhe",       name: "Karlsruher SC",          short: "Karlsruhe",        abbr: "KSC", colors: ["#0057A8", "#FFFFFF"], file: "karlsruher-sc-logo-footylogos.png" },
+      { slug: "greutherfuerth",  name: "SpVgg Greuther Fürth",   short: "Greuther Fürth",   abbr: "SGF", colors: ["#00612E", "#FFFFFF"], file: "spvgg-greuther-furth-logo-footylogos.png" },
+      { slug: "darmstadt",       name: "SV Darmstadt 98",        short: "Darmstadt 98",     abbr: "SVD", colors: ["#003C78", "#FFFFFF"], file: "sv-darmstadt-98-logo-footylogos.png" },
+      { slug: "bochum",          name: "VfL Bochum",             short: "Bochum",           abbr: "VFL", colors: ["#004C9E", "#FFFFFF"], file: "vfl-bochum-logo-footylogos.png" },
+      { slug: "osnabrueck",      name: "VfL Osnabrück",          short: "Osnabrück",        abbr: "OSN", colors: ["#6A1B6E", "#FFFFFF"], file: "vfl-osnabruck-logo-footylogos.png" },
+      { slug: "wolfsburg",       name: "VfL Wolfsburg",          short: "Wolfsburg",        abbr: "WOB", colors: ["#65B32E", "#FFFFFF"], file: "vfl-wolfsburg-logo-footylogos.png" },
+    ]
+  }
+};
