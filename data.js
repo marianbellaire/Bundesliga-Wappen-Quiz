@@ -92,7 +92,7 @@ const LEAGUES = {
       },
       {
         slug: "messi", name: "Lionel Messi", short: "Lionel Messi",
-        abbr: "M10", colors: ["#75AADB", "#FFFFFF"], file: "messi.png",
+        abbr: "M10", colors: ["#75AADB", "#FFFFFF"], file: "messi.webp",
         facts: "Dieser Spieler kommt aus Argentinien und gewann den Ballon d'Or, die Auszeichnung für den besten Fußballer der Welt, rekordverdächtige achtmal. Fast seine ganze Karriere spielte er für den FC Barcelona. Mit Argentinien wurde er 2022 endlich Weltmeister."
       },
       {
