@@ -1,4 +1,4 @@
-const CACHE_NAME = "wappenquiz-v2";
+const CACHE_NAME = "wappenquiz-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -29,27 +29,18 @@ self.addEventListener("fetch", event => {
   const req = event.request;
   if (req.method !== "GET") return;
 
-  // Bilder aus logos/: Netzwerk zuerst (damit neu hinzugefügte Wappen sofort greifen),
-  // sonst aus dem Cache, damit einmal geladene Wappen auch offline funktionieren.
-  if (req.url.includes("/logos/")) {
-    event.respondWith(
-      fetch(req)
-        .then(res => {
-          const copy = res.clone();
-          if (res.ok) caches.open(CACHE_NAME).then(c => c.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req))
-    );
-    return;
-  }
-
-  // App-Shell: Cache zuerst, damit die App offline sofort startet.
+  // Netzwerk zuerst, damit Updates (Design, neue Wappen, ...) sofort ankommen,
+  // sobald online. Nur wenn kein Netz da ist, aus dem Cache bedienen –
+  // dafür funktioniert die App trotzdem offline.
   event.respondWith(
-    caches.match(req).then(cached => cached || fetch(req).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE_NAME).then(c => c.put(req, copy));
-      return res;
-    }).catch(() => cached))
+    fetch(req)
+      .then(res => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(req))
   );
 });
