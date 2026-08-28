@@ -63,6 +63,14 @@ button { font-family: inherit; }
   width: min(30vw, 128px);
   border-radius: 18px;
   box-shadow: 0 14px 32px rgba(0,0,0,.45);
+  animation: roll 7s linear infinite;
+}
+@keyframes roll {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-logo { animation: none; }
 }
 .start-content h1 {
   font-size: clamp(2rem, 8vw, 3rem);
