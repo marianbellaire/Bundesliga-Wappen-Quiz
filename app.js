@@ -7,7 +7,8 @@ const Settings = {
   choices: 3,
   sound: true,
   speech: true,
-  rate: 0.9,
+  rate: 0.85,
+  voiceURI: null,
 
   load() {
     try {
@@ -18,7 +19,8 @@ const Settings = {
   save() {
     try {
       localStorage.setItem("wappenquiz.settings", JSON.stringify({
-        choices: this.choices, sound: this.sound, speech: this.speech, rate: this.rate
+        choices: this.choices, sound: this.sound, speech: this.speech,
+        rate: this.rate, voiceURI: this.voiceURI
       }));
     } catch (e) { /* ignore */ }
   }
@@ -30,19 +32,35 @@ Settings.load();
    ============================================================ */
 const Speech = {
   voice: null,
+  onVoicesReady: null,
 
   init() {
     if (!("speechSynthesis" in window)) return;
     const pick = () => {
-      const voices = speechSynthesis.getVoices();
+      const voices = this.germanVoices();
       this.voice =
-        voices.find(v => v.lang === "de-DE" && /google|natürlich|siri|anna|helena/i.test(v.name)) ||
+        (Settings.voiceURI && voices.find(v => v.voiceURI === Settings.voiceURI)) ||
+        voices.find(v => /google/i.test(v.name)) ||
+        voices.find(v => /natürlich|natural|online|enhanced|premium/i.test(v.name)) ||
         voices.find(v => v.lang === "de-DE") ||
         voices.find(v => v.lang && v.lang.startsWith("de")) ||
         null;
+      if (this.onVoicesReady) this.onVoicesReady();
     };
     pick();
     speechSynthesis.onvoiceschanged = pick;
+  },
+
+  germanVoices() {
+    if (!("speechSynthesis" in window)) return [];
+    return speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith("de"));
+  },
+
+  setVoice(voiceURI) {
+    Settings.voiceURI = voiceURI || null;
+    Settings.save();
+    const voices = this.germanVoices();
+    this.voice = (voiceURI && voices.find(v => v.voiceURI === voiceURI)) || this.voice;
   },
 
   say(text, { onend } = {}) {
@@ -55,27 +73,9 @@ const Speech = {
     u.lang = "de-DE";
     if (this.voice) u.voice = this.voice;
     u.rate = Settings.rate;
-    u.pitch = 1.05;
+    u.pitch = 1.18; // etwas höher/wärmer für einen freundlicheren Klang
     if (onend) u.onend = onend;
     speechSynthesis.speak(u);
-  },
-
-  sayQueue(texts, gapMs = 350) {
-    if (!("speechSynthesis" in window) || !Settings.speech) return;
-    speechSynthesis.cancel();
-    let i = 0;
-    const next = () => {
-      if (i >= texts.length) return;
-      const u = new SpeechSynthesisUtterance(texts[i]);
-      u.lang = "de-DE";
-      if (this.voice) u.voice = this.voice;
-      u.rate = Settings.rate;
-      u.pitch = 1.05;
-      i++;
-      u.onend = () => setTimeout(next, gapMs);
-      speechSynthesis.speak(u);
-    };
-    next();
   },
 
   stop() {
@@ -173,7 +173,7 @@ async function renderCrest(el, club) {
    Konfetti
    ============================================================ */
 function confettiBurst(layer) {
-  const colors = ["#ff9800", "#2fbf6e", "#3a7bd5", "#ffd54f", "#ff5a5f", "#ffffff"];
+  const colors = ["#cda449", "#e6c374", "#3fa06d", "#eef2f6", "#8a6d33"];
   const count = 26;
   for (let i = 0; i < count; i++) {
     const piece = document.createElement("div");
@@ -276,22 +276,30 @@ const Quiz = {
     const wrap = document.getElementById("choices");
     wrap.innerHTML = "";
     this.current.options.forEach(club => {
+      const row = document.createElement("div");
+      row.className = "choice-row";
+
       const btn = document.createElement("button");
       btn.className = "choice-btn";
       btn.type = "button";
       btn.textContent = club.short;
       btn.addEventListener("click", () => this.choose(club, btn));
-      wrap.appendChild(btn);
+
+      const speakBtn = document.createElement("button");
+      speakBtn.className = "speak-btn";
+      speakBtn.type = "button";
+      speakBtn.textContent = "🔊";
+      speakBtn.setAttribute("aria-label", `${club.short} vorlesen`);
+      speakBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        Sound.ensureCtx();
+        Speech.say(club.short);
+      });
+
+      row.appendChild(btn);
+      row.appendChild(speakBtn);
+      wrap.appendChild(row);
     });
-
-    setTimeout(() => this.replayOptions(), 450);
-  },
-
-  replayOptions() {
-    if (!this.current) return;
-    Sound.ensureCtx();
-    const names = this.current.options.map(c => c.short);
-    Speech.sayQueue(names);
   },
 
   choose(club, btn) {
@@ -369,6 +377,28 @@ function applySettingsToUI() {
   document.getElementById("opt-speech").checked = Settings.speech;
   document.getElementById("opt-rate").value = String(Settings.rate);
   document.getElementById("btn-mute").textContent = Settings.sound ? "🔊" : "🔇";
+  populateVoiceList();
+}
+
+function populateVoiceList() {
+  const select = document.getElementById("opt-voice");
+  const voices = Speech.germanVoices();
+  const current = select.value || Settings.voiceURI || "";
+  select.innerHTML = "";
+
+  const autoOpt = document.createElement("option");
+  autoOpt.value = "";
+  autoOpt.textContent = "Automatisch (empfohlen)";
+  select.appendChild(autoOpt);
+
+  voices.forEach(v => {
+    const opt = document.createElement("option");
+    opt.value = v.voiceURI;
+    opt.textContent = v.name + (v.lang !== "de-DE" ? ` (${v.lang})` : "");
+    select.appendChild(opt);
+  });
+
+  select.value = voices.some(v => v.voiceURI === current) ? current : "";
 }
 
 function wireUI() {
@@ -402,6 +432,10 @@ function wireUI() {
     Settings.rate = parseFloat(e.target.value);
     Settings.save();
   });
+  document.getElementById("opt-voice").addEventListener("change", e => {
+    Speech.setVoice(e.target.value);
+    Speech.say("Hallo! So klinge ich jetzt.");
+  });
   document.getElementById("btn-reset-progress").addEventListener("click", () => {
     Quiz.doneSlugs.clear();
     Quiz.renderDots();
@@ -413,8 +447,6 @@ function wireUI() {
     Settings.save();
     document.getElementById("btn-mute").textContent = Settings.sound ? "🔊" : "🔇";
   });
-  document.getElementById("btn-replay").addEventListener("click", () => Quiz.replayOptions());
-
   document.getElementById("btn-discover-home").addEventListener("click", () => showScreen("screen-start"));
   document.getElementById("btn-discover-prev").addEventListener("click", () => Discover.move(-1));
   document.getElementById("btn-discover-next").addEventListener("click", () => Discover.move(1));
@@ -426,6 +458,7 @@ function wireUI() {
 
 document.addEventListener("DOMContentLoaded", () => {
   wireUI();
+  Speech.onVoicesReady = populateVoiceList;
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js").catch(() => {});
   }

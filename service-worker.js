@@ -1,4 +1,4 @@
-const CACHE_NAME = "wappenquiz-v1";
+const CACHE_NAME = "wappenquiz-v2";
 const APP_SHELL = [
   "./",
   "./index.html",

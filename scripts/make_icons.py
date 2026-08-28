@@ -5,16 +5,19 @@ import math, os
 OUT = os.path.join(os.path.dirname(__file__), "..", "icons")
 os.makedirs(OUT, exist_ok=True)
 
+GOLD = "#cda449"
+GOLD_SOFT = "#e6c374"
+
 def draw_ball(draw, cx, cy, r):
-    # Weißer Ball
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#ffffff", outline="#1b2b34", width=max(2, int(r // 22)))
-    # zentrales schwarzes Fünfeck
+    # Goldener Ball-Umriss auf dunklem Grund (edles Emblem statt Comic-Fußball)
+    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#171f28", outline=GOLD, width=max(3, int(r // 16)))
+    # zentrales goldenes Fünfeck
     pent = []
     for i in range(5):
         ang = -math.pi / 2 + i * 2 * math.pi / 5
         pent.append((cx + r * 0.34 * math.cos(ang), cy + r * 0.34 * math.sin(ang)))
-    draw.polygon(pent, fill="#1b2b34")
-    # umliegende Fünfecke (angedeutet als Linien vom Zentrum-Fünfeck nach außen)
+    draw.polygon(pent, fill=GOLD_SOFT)
+    # umliegende Linien, angedeutet
     for i in range(5):
         ang = -math.pi / 2 + i * 2 * math.pi / 5
         x1 = cx + r * 0.34 * math.cos(ang)
@@ -22,21 +25,23 @@ def draw_ball(draw, cx, cy, r):
         ang2 = ang + math.pi / 5
         x2 = cx + r * 0.72 * math.cos(ang2)
         y2 = cy + r * 0.72 * math.sin(ang2)
-        draw.line([x1, y1, x2, y2], fill="#1b2b34", width=max(2, int(r // 26)))
+        draw.line([x1, y1, x2, y2], fill=GOLD, width=max(2, int(r // 26)))
 
 def make(size, maskable=False, fname=None):
     img = Image.new("RGB", (size, size))
     draw = ImageDraw.Draw(img)
-    # Himmel/Rasen-Hintergrund
-    horizon = int(size * 0.56)
+    # Dunkler, edler Verlauf (passend zum App-Design) mit sanftem Glow im Zentrum
+    cx0, cy0 = size / 2, size * 0.46
+    max_d = math.hypot(size, size) / 2
+    top = (10, 14, 18)      # #0a0e12
+    glow = (40, 52, 66)     # gedeckter Glow-Ton
+    px = img.load()
     for y in range(size):
-        if y < horizon:
-            t = y / max(horizon, 1)
-            c = tuple(int(a + (b - a) * t) for a, b in zip((110, 198, 255), (191, 233, 255)))
-        else:
-            t = (y - horizon) / max(size - horizon, 1)
-            c = tuple(int(a + (b - a) * t) for a, b in zip((62, 163, 74), (47, 138, 61)))
-        draw.line([(0, y), (size, y)], fill=c)
+        for x in range(size):
+            d = math.hypot(x - cx0, y - cy0) / max_d
+            t = min(1.0, d)
+            c = tuple(int(a + (b - a) * (1 - t)) for a, b in zip(top, glow))
+            px[x, y] = c
 
     pad = size * (0.18 if maskable else 0.06)
     r = (size - 2 * pad) * 0.30
