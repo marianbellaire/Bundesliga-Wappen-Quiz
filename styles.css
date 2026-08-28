@@ -101,7 +101,20 @@ button { font-family: inherit; }
   box-shadow: none;
 }
 .big-button.secondary:active { transform: translateY(2px); background: rgba(255,255,255,.08); }
-.big-button-icon { font-size: 1.15em; line-height: 1; }
+.big-button-icon { font-size: 1.15em; line-height: 1; display: flex; align-items: center; justify-content: center; }
+
+.icon-button svg, .big-button-icon svg, .speak-btn svg, .inline-icon svg, .trophy svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
+.inline-icon {
+  display: inline-flex;
+  width: .95em;
+  height: .95em;
+  vertical-align: -0.15em;
+  color: var(--gold-soft);
+}
 
 .pulse { animation: glow 2.4s ease-in-out infinite; }
 @keyframes glow {
@@ -263,9 +276,11 @@ button { font-family: inherit; }
   display: flex;
   align-items: stretch;
   gap: 8px;
+  width: 100%;
 }
 .choice-btn {
   flex: 1;
+  min-width: 0;
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 16px;
@@ -285,6 +300,9 @@ button { font-family: inherit; }
 .speak-btn {
   flex: 0 0 auto;
   width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(255,255,255,.05);
   border: 1px solid var(--panel-border);
   border-radius: 16px;

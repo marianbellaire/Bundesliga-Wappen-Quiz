@@ -25,15 +25,15 @@
     <h1>Wappen-Quiz</h1>
     <p class="subtitle">Kennst du alle Bundesliga-Vereine?</p>
     <button id="btn-play" class="big-button pulse" type="button">
-      <span class="big-button-icon">▶️</span>
+      <span class="big-button-icon" data-icon="play"></span>
       <span>Spielen</span>
     </button>
     <button id="btn-learn" class="big-button secondary" type="button">
-      <span class="big-button-icon">🔎</span>
+      <span class="big-button-icon" data-icon="search"></span>
       <span>Wappen entdecken</span>
     </button>
   </div>
-  <button id="btn-settings" class="icon-button corner" type="button" aria-label="Einstellungen" title="Einstellungen (für Erwachsene)">⚙️</button>
+  <button id="btn-settings" class="icon-button corner" type="button" aria-label="Einstellungen" title="Einstellungen (für Erwachsene)" data-icon="settings"></button>
 </section>
 
 <!-- ===== Einstellungen (fürs Elternteil) ===== -->
@@ -78,16 +78,16 @@
 <!-- ===== Quiz ===== -->
 <section id="screen-quiz" class="screen">
   <header class="quiz-header">
-    <button id="btn-quiz-home" class="icon-button" type="button" aria-label="Zurück zum Start">🏠</button>
+    <button id="btn-quiz-home" class="icon-button" type="button" aria-label="Zurück zum Start" data-icon="home"></button>
     <div id="progress-dots" class="progress-dots" aria-hidden="true"></div>
-    <button id="btn-mute" class="icon-button" type="button" aria-label="Ton an/aus">🔊</button>
+    <button id="btn-mute" class="icon-button" type="button" aria-label="Ton an/aus" data-icon="speaker"></button>
   </header>
 
   <div class="crest-stage">
     <div id="crest" class="crest"></div>
   </div>
 
-  <p class="hint-text">Welcher Verein ist das? Tippe zum Anhören auf 🔊</p>
+  <p class="hint-text">Welcher Verein ist das? Tippe zum Anhören auf <span class="inline-icon" data-icon="speaker"></span></p>
 
   <div id="choices" class="choices"></div>
 
@@ -97,7 +97,7 @@
 <!-- ===== Entdecken (Lernmodus, ohne Quiz) ===== -->
 <section id="screen-discover" class="screen">
   <header class="quiz-header">
-    <button id="btn-discover-home" class="icon-button" type="button" aria-label="Zurück zum Start">🏠</button>
+    <button id="btn-discover-home" class="icon-button" type="button" aria-label="Zurück zum Start" data-icon="home"></button>
     <div id="discover-counter" class="discover-counter"></div>
     <span></span>
   </header>
@@ -109,30 +109,31 @@
   <div id="discover-name" class="discover-name"></div>
 
   <div class="discover-nav">
-    <button id="btn-discover-prev" class="icon-button large" type="button" aria-label="Vorheriger Verein">⬅️</button>
-    <button id="btn-discover-say" class="icon-button large" type="button" aria-label="Namen vorlesen">🔊</button>
-    <button id="btn-discover-next" class="icon-button large" type="button" aria-label="Nächster Verein">➡️</button>
+    <button id="btn-discover-prev" class="icon-button large" type="button" aria-label="Vorheriger Verein" data-icon="chevronLeft"></button>
+    <button id="btn-discover-say" class="icon-button large" type="button" aria-label="Namen vorlesen" data-icon="speaker"></button>
+    <button id="btn-discover-next" class="icon-button large" type="button" aria-label="Nächster Verein" data-icon="chevronRight"></button>
   </div>
 </section>
 
 <!-- ===== Runde geschafft ===== -->
 <section id="screen-complete" class="screen">
   <div class="start-content">
-    <div class="trophy">🏆</div>
+    <div class="trophy" data-icon="trophy"></div>
     <h1>Super gemacht!</h1>
     <p class="subtitle">Du kennst jetzt alle Bundesliga-Wappen!</p>
     <button id="btn-again" class="big-button pulse" type="button">
-      <span class="big-button-icon">🔁</span>
+      <span class="big-button-icon" data-icon="repeat"></span>
       <span>Nochmal spielen</span>
     </button>
     <button id="btn-complete-home" class="big-button secondary" type="button">
-      <span class="big-button-icon">🏠</span>
+      <span class="big-button-icon" data-icon="home"></span>
       <span>Zum Start</span>
     </button>
   </div>
 </section>
 
 <script src="data.js"></script>
+<script src="icons.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

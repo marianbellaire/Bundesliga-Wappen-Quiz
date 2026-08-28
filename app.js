@@ -288,7 +288,7 @@ const Quiz = {
       const speakBtn = document.createElement("button");
       speakBtn.className = "speak-btn";
       speakBtn.type = "button";
-      speakBtn.textContent = "🔊";
+      speakBtn.innerHTML = ICONS.speaker;
       speakBtn.setAttribute("aria-label", `${club.short} vorlesen`);
       speakBtn.addEventListener("click", e => {
         e.stopPropagation();
@@ -376,7 +376,7 @@ function applySettingsToUI() {
   document.getElementById("opt-sound").checked = Settings.sound;
   document.getElementById("opt-speech").checked = Settings.speech;
   document.getElementById("opt-rate").value = String(Settings.rate);
-  document.getElementById("btn-mute").textContent = Settings.sound ? "🔊" : "🔇";
+  document.getElementById("btn-mute").innerHTML = Settings.sound ? ICONS.speaker : ICONS.speakerMuted;
   populateVoiceList();
 }
 
@@ -422,7 +422,7 @@ function wireUI() {
   document.getElementById("opt-sound").addEventListener("change", e => {
     Settings.sound = e.target.checked;
     Settings.save();
-    document.getElementById("btn-mute").textContent = Settings.sound ? "🔊" : "🔇";
+    document.getElementById("btn-mute").innerHTML = Settings.sound ? ICONS.speaker : ICONS.speakerMuted;
   });
   document.getElementById("opt-speech").addEventListener("change", e => {
     Settings.speech = e.target.checked;
@@ -445,7 +445,7 @@ function wireUI() {
   document.getElementById("btn-mute").addEventListener("click", () => {
     Settings.sound = !Settings.sound;
     Settings.save();
-    document.getElementById("btn-mute").textContent = Settings.sound ? "🔊" : "🔇";
+    document.getElementById("btn-mute").innerHTML = Settings.sound ? ICONS.speaker : ICONS.speakerMuted;
   });
   document.getElementById("btn-discover-home").addEventListener("click", () => showScreen("screen-start"));
   document.getElementById("btn-discover-prev").addEventListener("click", () => Discover.move(-1));
@@ -457,6 +457,7 @@ function wireUI() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  applyIcons();
   wireUI();
   Speech.onVoicesReady = populateVoiceList;
   if ("serviceWorker" in navigator) {
