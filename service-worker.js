@@ -1,16 +1,16 @@
-const CACHE_NAME = "wappenquiz-v10";
+const CACHE_NAME = "wappenquiz-v11";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=11",
-  "./app.js?v=11",
-  "./data.js?v=11",
-  "./icons.js?v=11",
-  "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable-512.png",
-  "./icons/apple-touch-icon.png",
+  "./styles.css?v=12",
+  "./app.js?v=12",
+  "./data.js?v=12",
+  "./icons.js?v=12",
+  "./manifest.json?v=12",
+  "./icons/icon-192.png?v=12",
+  "./icons/icon-512.png?v=12",
+  "./icons/icon-maskable-512.png?v=12",
+  "./icons/apple-touch-icon.png?v=12",
   "./logos/bundesliga-icon.png",
   "./logos/2-bundesliga-icon.png",
   "./logos/Bundesliga/legenden.png"
