@@ -1,4 +1,4 @@
-const CACHE_NAME = "wappenquiz-v3";
+const CACHE_NAME = "wappenquiz-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,7 +8,8 @@ const APP_SHELL = [
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./icons/icon-maskable-512.png"
+  "./icons/icon-maskable-512.png",
+  "./logos/bundesliga-icon.png"
 ];
 
 self.addEventListener("install", event => {
