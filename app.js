@@ -324,6 +324,7 @@ const Quiz = {
       btn.classList.add("wrong");
       crestEl.classList.add("shake");
       Sound.tryAgain();
+      Speech.say("Leider falsch!");
       setTimeout(() => crestEl.classList.remove("shake"), 400);
       btn.disabled = true;
       setTimeout(() => btn.classList.remove("wrong"), 500);

@@ -1,11 +1,11 @@
-const CACHE_NAME = "wappenquiz-v5";
+const CACHE_NAME = "wappenquiz-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=6",
-  "./app.js?v=6",
-  "./data.js?v=6",
-  "./icons.js?v=6",
+  "./styles.css?v=7",
+  "./app.js?v=7",
+  "./data.js?v=7",
+  "./icons.js?v=7",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
