@@ -73,7 +73,7 @@ const Speech = {
     u.lang = "de-DE";
     if (this.voice) u.voice = this.voice;
     u.rate = Settings.rate;
-    u.pitch = 1.18; // etwas höher/wärmer für einen freundlicheren Klang
+    u.pitch = 1.0; // normale Tonhöhe – Auswahl der Stimme selbst macht den Ton freundlich
     if (onend) u.onend = onend;
     speechSynthesis.speak(u);
   },
