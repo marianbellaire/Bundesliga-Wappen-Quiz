@@ -138,6 +138,16 @@ const Sound = {
     if (!ctx) return;
     const t = ctx.currentTime;
     [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => this.tone(f, t + i * 0.14, 0.5, "triangle", 0.16));
+  },
+  bling() {
+    // Dezenter, heller Klick-Ton für Menü-/Navigations-Buttons: kurzer
+    // Grundton plus leiser, minimal versetzter Oberton für etwas Glanz.
+    if (!Settings.sound) return;
+    const ctx = this.ensureCtx();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    this.tone(1567.98, t, 0.16, "sine", 0.07);
+    this.tone(2349.32, t + 0.015, 0.14, "sine", 0.035);
   }
 };
 
@@ -468,27 +478,33 @@ function wireUI() {
 
   document.getElementById("btn-play").addEventListener("click", () => {
     Sound.ensureCtx();
+    Sound.bling();
     showScreen("screen-mode");
   });
   document.getElementById("btn-learn").addEventListener("click", () => {
     Sound.ensureCtx();
+    Sound.bling();
     Discover.start();
   });
   document.getElementById("btn-mode-home").addEventListener("click", () => showScreen("screen-start"));
   document.getElementById("mode-bundesliga").addEventListener("click", () => {
     Sound.ensureCtx();
+    Sound.bling();
     Quiz.start("bundesliga");
   });
   document.getElementById("mode-2bundesliga").addEventListener("click", () => {
     Sound.ensureCtx();
+    Sound.bling();
     Quiz.start("2bundesliga");
   });
   document.getElementById("mode-3liga").addEventListener("click", () => {
     Sound.ensureCtx();
+    Sound.bling();
     Quiz.start("3liga");
   });
   document.getElementById("mode-legenden").addEventListener("click", () => {
     Sound.ensureCtx();
+    Sound.bling();
     Quiz.start("legenden");
   });
   document.getElementById("btn-facts-replay").addEventListener("click", () => {
