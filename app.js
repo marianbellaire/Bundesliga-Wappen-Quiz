@@ -160,8 +160,9 @@ function checkLogo(url) {
   });
 }
 
-async function renderCrest(el, club, folder) {
+async function renderCrest(el, club, folder, cropPosition) {
   el.style.background = "";
+  el.style.backgroundPosition = cropPosition ? `${cropPosition} center` : "center";
   el.textContent = "";
   const url = logoUrl(folder, club);
   const hasLogo = await checkLogo(url);
@@ -281,7 +282,7 @@ const Quiz = {
   renderRound() {
     const crestEl = document.getElementById("crest");
     crestEl.classList.remove("bounce", "shake");
-    renderCrest(crestEl, this.current.correctClub, this.league.folder);
+    renderCrest(crestEl, this.current.correctClub, this.league.folder, this.league.cropPosition);
 
     document.getElementById("hint-label").textContent = this.league.promptLabel || "Wer oder was ist das?";
 

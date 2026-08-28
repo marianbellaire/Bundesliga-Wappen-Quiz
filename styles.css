@@ -300,7 +300,7 @@ button { font-family: inherit; }
   text-shadow: 0 2px 6px rgba(0,0,0,.4);
   box-shadow: 0 18px 40px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.15);
   background-size: cover;
-  background-position: top center;
+  background-position: center;
   transition: transform .25s ease;
 }
 .crest.big { width: min(58vw, 280px); height: min(58vw, 280px); }

@@ -97,6 +97,7 @@ const LEAGUES = {
     folder: "logos/Legenden",
     promptLabel: "Wer ist das?",
     completeText: "Du kennst jetzt alle Fußball-Legenden!",
+    cropPosition: "top", // Porträtfotos: Gesicht statt Bildmitte zeigen
     clubs: [
       {
         slug: "beckenbauer", name: "Franz Beckenbauer", short: "Franz Beckenbauer",
