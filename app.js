@@ -377,9 +377,11 @@ const Discover = {
   pool: [], // aktuell gefilterte Liste, je Eintrag { ...club, leagueLabel, folder }
 
   allClubs() {
-    return Object.entries(LEAGUES).flatMap(([key, league]) =>
-      league.clubs.map(c => ({ ...c, leagueKey: key, leagueLabel: league.label, folder: league.folder }))
-    );
+    return Object.entries(LEAGUES)
+      .filter(([, league]) => league.discoverable)
+      .flatMap(([key, league]) =>
+        league.clubs.map(c => ({ ...c, leagueKey: key, leagueLabel: league.label, folder: league.folder }))
+      );
   },
 
   applyFilter() {
@@ -479,6 +481,10 @@ function wireUI() {
   document.getElementById("mode-2bundesliga").addEventListener("click", () => {
     Sound.ensureCtx();
     Quiz.start("2bundesliga");
+  });
+  document.getElementById("mode-3liga").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Quiz.start("3liga");
   });
   document.getElementById("mode-legenden").addEventListener("click", () => {
     Sound.ensureCtx();

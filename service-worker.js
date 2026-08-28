@@ -1,18 +1,19 @@
-const CACHE_NAME = "wappenquiz-v17";
+const CACHE_NAME = "wappenquiz-v18";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=18",
-  "./app.js?v=18",
-  "./data.js?v=18",
-  "./icons.js?v=18",
-  "./manifest.json?v=18",
-  "./icons/icon-192.png?v=18",
-  "./icons/icon-512.png?v=18",
-  "./icons/icon-maskable-512.png?v=18",
-  "./icons/apple-touch-icon.png?v=18",
+  "./styles.css?v=19",
+  "./app.js?v=19",
+  "./data.js?v=19",
+  "./icons.js?v=19",
+  "./manifest.json?v=19",
+  "./icons/icon-192.png?v=19",
+  "./icons/icon-512.png?v=19",
+  "./icons/icon-maskable-512.png?v=19",
+  "./icons/apple-touch-icon.png?v=19",
   "./logos/bundesliga-icon.png",
   "./logos/2-bundesliga-icon.png",
+  "./logos/3-liga-icon.png",
   "./logos/Legenden/beckenbauer.png"
 ];
 

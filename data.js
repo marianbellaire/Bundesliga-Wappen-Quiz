@@ -4,12 +4,14 @@
 // Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Bild fehlt).
 // "facts": optionaler Text, der bei Rundenstart vorgelesen wird (aktuell nur
 // bei "legenden" genutzt) – die Hinweise, an denen man die Person erkennt.
+// "discoverable": true -> taucht im Entdecken-Modus (Wappen-Sammlung) auf.
 const LEAGUES = {
   bundesliga: {
     label: "Bundesliga",
     folder: "logos/Bundesliga",
     promptLabel: "Welcher Verein ist das?",
     completeText: "Du kennst jetzt alle Bundesliga-Wappen!",
+    discoverable: true,
     clubs: [
       { slug: "bayern",        name: "FC Bayern München",     short: "Bayern München",   abbr: "FCB", colors: ["#DC052D", "#0C1C3D"], file: "bayern.png" },
       { slug: "dortmund",      name: "Borussia Dortmund",     short: "Dortmund",         abbr: "BVB", colors: ["#FDE100", "#000000"], file: "dortmund.png" },
@@ -37,6 +39,7 @@ const LEAGUES = {
     folder: "logos/2. Bundesliga",
     promptLabel: "Welcher Verein ist das?",
     completeText: "Du kennst jetzt alle Wappen der 2. Bundesliga!",
+    discoverable: true,
     clubs: [
       { slug: "magdeburg",       name: "1. FC Magdeburg",        short: "Magdeburg",        abbr: "FCM", colors: ["#004B93", "#FFFFFF"], file: "1-fc-magdeburg-logo-footylogos.png" },
       { slug: "bielefeld",       name: "Arminia Bielefeld",      short: "Bielefeld",        abbr: "DSC", colors: ["#000000", "#4A90D9"], file: "arminia-bielefeld-logo-footylogos.png" },
@@ -56,6 +59,36 @@ const LEAGUES = {
       { slug: "bochum",          name: "VfL Bochum",             short: "Bochum",           abbr: "VFL", colors: ["#004C9E", "#FFFFFF"], file: "vfl-bochum-logo-footylogos.png" },
       { slug: "osnabrueck",      name: "VfL Osnabrück",          short: "Osnabrück",        abbr: "OSN", colors: ["#6A1B6E", "#FFFFFF"], file: "vfl-osnabruck-logo-footylogos.png" },
       { slug: "wolfsburg",       name: "VfL Wolfsburg",          short: "Wolfsburg",        abbr: "WOB", colors: ["#65B32E", "#FFFFFF"], file: "vfl-wolfsburg-logo-footylogos.png" },
+    ]
+  },
+
+  "3liga": {
+    label: "3. Liga",
+    folder: "logos/3. Liga",
+    promptLabel: "Welcher Verein ist das?",
+    completeText: "Du kennst jetzt alle Wappen der 3. Liga!",
+    discoverable: true,
+    clubs: [
+      { slug: "duisburg",       name: "MSV Duisburg",              short: "Duisburg",           abbr: "MSV",  colors: ["#0060A9", "#000000"], file: "msv-duisburg-logo-footylogos.png" },
+      { slug: "saarbruecken",   name: "1. FC Saarbrücken",         short: "Saarbrücken",        abbr: "FCS",  colors: ["#F4C300", "#0057A8"], file: "1-fc-saarbrucken-logo-footylogos.png" },
+      { slug: "wuerzburg",      name: "Würzburger Kickers",        short: "Würzburger Kickers", abbr: "WÜK",  colors: ["#E2001A", "#000000"], file: "wurzburger-kickers-logo-footylogos.png" },
+      { slug: "aachen",         name: "Alemannia Aachen",          short: "Aachen",             abbr: "AAC",  colors: ["#FFD400", "#00205B"], file: "alemannia-aachen-logo-footylogos.png" },
+      { slug: "muenster",       name: "Preußen Münster",           short: "Münster",            abbr: "SCP",  colors: ["#000000", "#FFFFFF"], file: "preussen-munster-logo-footylogos.png" },
+      { slug: "rostock",        name: "Hansa Rostock",             short: "Hansa Rostock",      abbr: "FCH",  colors: ["#00549F", "#E2001A"], file: "hansa-rostock-logo-footylogos.png" },
+      { slug: "mannheim",       name: "SV Waldhof Mannheim",       short: "Waldhof Mannheim",   abbr: "SVW",  colors: ["#004A99", "#FFFFFF"], file: "waldhof-mannheim-logo-footylogos.png" },
+      { slug: "regensburg",     name: "SSV Jahn Regensburg",       short: "Jahn Regensburg",    abbr: "JAH",  colors: ["#004B93", "#FFFFFF"], file: "jahn-regensburg-logo-footylogos.png" },
+      { slug: "hoffenheim-ii",  name: "TSG 1899 Hoffenheim II",    short: "Hoffenheim II",      abbr: "TS2",  colors: ["#1C63B7", "#FFFFFF"], file: "hoffenheim-ii.png" },
+      { slug: "koeln-viktoria", name: "Viktoria Köln",             short: "Viktoria Köln",      abbr: "VIK",  colors: ["#E2001A", "#000000"], file: "viktoria-koln-logo-footylogos.png" },
+      { slug: "stuttgart-ii",   name: "VfB Stuttgart II",          short: "Stuttgart II",       abbr: "VF2",  colors: ["#E32219", "#FFFFFF"], file: "stuttgart-ii.png" },
+      { slug: "meppen",         name: "SV Meppen",                 short: "Meppen",             abbr: "SVM",  colors: ["#00539B", "#FFFFFF"], file: "sv-meppen-logo-footylogos.png" },
+      { slug: "grossaspach",    name: "SG Sonnenhof Großaspach",   short: "Großaspach",         abbr: "SGS",  colors: ["#00843D", "#FFFFFF"], file: "sg-sonnenhof-grossaspach-logo-footylogos.png" },
+      { slug: "essen",          name: "Rot-Weiss Essen",           short: "Rot-Weiss Essen",    abbr: "RWE",  colors: ["#E2001A", "#FFFFFF"], file: "rot-weiss-essen-logo-footylogos.png" },
+      { slug: "ingolstadt",     name: "FC Ingolstadt 04",          short: "Ingolstadt",         abbr: "FCI",  colors: ["#C8102E", "#FFFFFF"], file: "fc-ingolstadt-logo-footylogos.png" },
+      { slug: "koeln-fortuna",  name: "SC Fortuna Köln",           short: "Fortuna Köln",       abbr: "SCF",  colors: ["#E2001A", "#FFFFFF"], file: "fortuna-koln-logo-footylogos.png" },
+      { slug: "havelse",        name: "TSV Havelse",               short: "Havelse",            abbr: "HAV",  colors: ["#00843D", "#FFFFFF"], file: "tsv-havelse-logo-footylogos.png" },
+      { slug: "duesseldorf",    name: "Fortuna Düsseldorf",        short: "Düsseldorf",         abbr: "F95",  colors: ["#E2001A", "#FFFFFF"], file: "fortuna-dusseldorf-logo-footylogos.png" },
+      { slug: "verl",           name: "SC Verl",                   short: "Verl",               abbr: "SCV",  colors: ["#004B93", "#FFFFFF"], file: "sc-verl-logo-footylogos.png" },
+      { slug: "wiesbaden",      name: "SV Wehen Wiesbaden",        short: "Wehen Wiesbaden",    abbr: "SVWW", colors: ["#004B93", "#E2001A"], file: "sv-wehen-wiesbaden-logo-footylogos.png" },
     ]
   },
 
