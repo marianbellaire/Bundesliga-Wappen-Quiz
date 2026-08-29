@@ -155,7 +155,7 @@ const LEAGUES = {
         facts: "Dieser Spieler kommt aus Portugal und gewann den Ballon d'Or fünfmal. Er spielte unter anderem für Manchester United, Real Madrid und Juventus Turin und wurde fünfmal Champions-League-Sieger. Mit Portugal gewann er 2016 die Europameisterschaft." },
       { slug: "beckham", name: "David Beckham", short: "David Beckham", abbr: "DB7", colors: ["#0033A0", "#DA291C"], file: "beckham.png",
         facts: "Dieser Spieler kommt aus England und ist berühmt für seine präzisen Freistöße und Flanken. Er spielte unter anderem für Manchester United und Real Madrid und gewann 1999 mit Manchester United gleich drei große Titel in einem Jahr." },
-      { slug: "buffon", name: "Gianluigi Buffon", short: "Gianluigi Buffon", abbr: "GB", colors: ["#0066CC", "#FFFFFF"], file: "buffon.png",
+      { slug: "buffon", name: "Gianluigi Buffon", short: "Gianluigi Buffon", abbr: "GB", colors: ["#0066CC", "#FFFFFF"], file: "buffon.webp",
         facts: "Dieser Spieler kommt aus Italien und war einer der besten Torhüter der Fußballgeschichte. Fast seine gesamte Karriere spielte er für Juventus Turin. Mit Italien wurde er 2006 Weltmeister." },
       { slug: "maradona", name: "Diego Maradona", short: "Diego Maradona", abbr: "DM", colors: ["#75AADB", "#FFFFFF"], file: "maradona.png",
         facts: "Dieser Spieler kommt aus Argentinien und gilt für viele als einer der größten Fußballer aller Zeiten. Er spielte unter anderem für den FC Barcelona und den SSC Neapel. Mit Argentinien wurde er 1986 Weltmeister und schoss dabei das berühmte „Jahrhunderttor” gegen England." },
