@@ -639,6 +639,11 @@ function wireUI() {
     Sound.bling();
     Quiz.start("3liga");
   });
+  document.getElementById("mode-international").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Sound.bling();
+    Quiz.start("international");
+  });
   document.getElementById("mode-legenden").addEventListener("click", () => {
     Sound.ensureCtx();
     Sound.bling();

@@ -98,6 +98,40 @@ const LEAGUES = {
     ]
   },
 
+  international: {
+    label: "International",
+    folder: "logos/International",
+    promptLabel: "Welcher Verein ist das?",
+    completeText: "Du kennst jetzt alle internationalen Top-Vereine!",
+    discoverable: true,
+    clubs: [
+      { slug: "ac-milan", name: "Associazione Calcio Milan", short: "AC Milan", abbr: "ACM", colors: ["#FB090B", "#000000"], file: "ac-milan-logo-footylogos.png" },
+      { slug: "ajax", name: "AFC Ajax", short: "Ajax Amsterdam", abbr: "AJA", colors: ["#D2122E", "#FFFFFF"], file: "ajax-logo-1991-2025-footylogos.png" },
+      { slug: "arsenal", name: "Arsenal Football Club", short: "FC Arsenal", abbr: "ARS", colors: ["#EF0107", "#FFFFFF"], file: "arsenal-logo-footylogos.png" },
+      { slug: "atletico-madrid", name: "Club Atlético de Madrid", short: "Atlético Madrid", abbr: "ATM", colors: ["#CB3524", "#FFFFFF"], file: "atletico-madrid-logo-footylogos.png" },
+      { slug: "chelsea", name: "Chelsea Football Club", short: "FC Chelsea", abbr: "CHE", colors: ["#034694", "#FFFFFF"], file: "chelsea-logo-footylogos.png" },
+      { slug: "barcelona", name: "Futbol Club Barcelona", short: "FC Barcelona", abbr: "FCB", colors: ["#A50044", "#004D98"], file: "fc-barcelona-logo-footylogos.png" },
+      { slug: "basel", name: "Fußballclub Basel 1893", short: "FC Basel", abbr: "BAS", colors: ["#DA291C", "#003DA5"], file: "fc-basel-logo-footylogos.png" },
+      { slug: "fenerbahce", name: "Fenerbahçe Spor Kulübü", short: "Fenerbahçe Istanbul", abbr: "FEN", colors: ["#FFED00", "#00296B"], file: "fenerbahce-logo-footylogos.png" },
+      { slug: "feyenoord", name: "Feyenoord Rotterdam", short: "Feyenoord Rotterdam", abbr: "FEY", colors: ["#EE1C25", "#FFFFFF"], file: "feyenoord-logo-footylogos.png" },
+      { slug: "galatasaray", name: "Galatasaray Spor Kulübü", short: "Galatasaray Istanbul", abbr: "GAL", colors: ["#A6192E", "#FDB913"], file: "galatasaray-logo-footylogos.png" },
+      { slug: "inter-miami", name: "Inter Miami Club de Fútbol", short: "Inter Miami CF", abbr: "MIA", colors: ["#F7B5CD", "#231F20"], file: "inter-miami-logo-footylogos.png" },
+      { slug: "inter-mailand", name: "Football Club Internazionale Milano", short: "Inter Mailand", abbr: "INT", colors: ["#010E80", "#000000"], file: "inter-milan-logo-footylogos.png" },
+      { slug: "juventus", name: "Juventus Football Club", short: "Juventus Turin", abbr: "JUV", colors: ["#000000", "#FFFFFF"], file: "juventus-logo-footylogos.png" },
+      { slug: "la-galaxy", name: "Los Angeles Galaxy", short: "LA Galaxy", abbr: "LAG", colors: ["#00245D", "#8CC63F"], file: "la-galaxy-logo-footylogos.png" },
+      { slug: "liverpool", name: "Liverpool Football Club", short: "FC Liverpool", abbr: "LIV", colors: ["#C8102E", "#F6EB61"], file: "liverpool-fc-logo-footylogos.png" },
+      { slug: "manchester-city", name: "Manchester City Football Club", short: "Manchester City", abbr: "MCI", colors: ["#6CABDD", "#1C2C5B"], file: "manchester-city-logo-footylogos.png" },
+      { slug: "manchester-united", name: "Manchester United Football Club", short: "Manchester United", abbr: "MUN", colors: ["#DA291C", "#FBE122"], file: "manchester-united-logo-footylogos.png" },
+      { slug: "lyon", name: "Olympique Lyonnais", short: "Olympique Lyon", abbr: "OL", colors: ["#00285E", "#FFFFFF"], file: "olympique-lyonnais-logo-footylogos.png" },
+      { slug: "psg", name: "Paris Saint-Germain Football Club", short: "Paris Saint-Germain", abbr: "PSG", colors: ["#004170", "#DA291C"], file: "paris-saint-germain-psg-logo-footylogos.png" },
+      { slug: "psv", name: "Philips Sport Vereniging", short: "PSV Eindhoven", abbr: "PSV", colors: ["#ED1C24", "#FFFFFF"], file: "psv-eindhoven-logo-footylogos.png" },
+      { slug: "rapid-wien", name: "Sportklub Rapid Wien", short: "SK Rapid Wien", abbr: "RAP", colors: ["#005B31", "#FFFFFF"], file: "rapid-wien-logo-footylogos.png" },
+      { slug: "real-madrid", name: "Real Madrid Club de Fútbol", short: "Real Madrid", abbr: "RMA", colors: ["#FEBE10", "#00529F"], file: "real-madrid-logo-footylogos.png" },
+      { slug: "salzburg", name: "Fußballclub Red Bull Salzburg", short: "FC Red Bull Salzburg", abbr: "RBS", colors: ["#D50032", "#FFFFFF"], file: "red-bull-salzburg-logo-footylogos.png" },
+      { slug: "vancouver-whitecaps", name: "Vancouver Whitecaps Football Club", short: "Vancouver Whitecaps FC", abbr: "VAN", colors: ["#001E62", "#A9D3F5"], file: "vancouver-whitecaps-logo-footylogos.png" },
+    ]
+  },
+
   legenden: {
     label: "Legenden",
     folder: "logos/Legenden",
