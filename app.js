@@ -185,7 +185,7 @@ const Voice = {
 
   playFacts(club, folder) {
     const dir = this.toAudioFolder(folder);
-    return this.playOrSay(`${dir}/facts-${club.slug}.mp3`, club.facts);
+    return this.playOrSay(`${dir}/facts-${club.slug}.mp3`, club.factsTts || club.facts);
   },
 
   playWrong() {

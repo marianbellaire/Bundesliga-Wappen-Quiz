@@ -44,7 +44,7 @@ for (const [key, league] of Object.entries(LEAGUES)) {
   for (const club of league.clubs) {
     jobs.push({ out: `${folder}/${club.slug}.mp3`, text: withPunctuation(club.tts || club.short) });
     if (club.facts) {
-      jobs.push({ out: `${folder}/facts-${club.slug}.mp3`, text: withPunctuation(club.facts) });
+      jobs.push({ out: `${folder}/facts-${club.slug}.mp3`, text: withPunctuation(club.factsTts || club.facts) });
     }
   }
 }

@@ -10,6 +10,10 @@
 // Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Bild fehlt).
 // "facts": optionaler Text, der bei Rundenstart vorgelesen wird (aktuell nur
 // bei "legenden" genutzt) – die Hinweise, an denen man die Person erkennt.
+// Erscheint 1:1 so im Fakten-Panel der App.
+// "factsTts": optionale abweichende Vorlage NUR für die Sprachausgabe der
+// Fakten (analog zu "tts" bei short) – falls der angezeigte Fakten-Text
+// mal anders klingen soll, als er geschrieben ist. Fällt auf "facts" zurück.
 // "discoverable": true -> taucht im Entdecken-Modus (Wappen-Sammlung) auf.
 const LEAGUES = {
   bundesliga: {
