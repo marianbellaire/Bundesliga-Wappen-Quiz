@@ -348,7 +348,7 @@ const Sound = {
 /* ============================================================
    Wappen-Darstellung: echtes Bild falls vorhanden, sonst Platzhalter
    ============================================================ */
-const logoAvailability = new Map(); // "folder/file" -> true/false
+const logoAvailability = new Map(); // "folder/file" -> { ok, ratio } | { ok: false }
 
 function logoUrl(folder, club) {
   return `${folder}/${club.file || club.slug + ".png"}`;
@@ -358,8 +358,16 @@ function checkLogo(url) {
   if (logoAvailability.has(url)) return Promise.resolve(logoAvailability.get(url));
   return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => { logoAvailability.set(url, true); resolve(true); };
-    img.onerror = () => { logoAvailability.set(url, false); resolve(false); };
+    img.onload = () => {
+      const info = { ok: true, ratio: img.naturalWidth / img.naturalHeight };
+      logoAvailability.set(url, info);
+      resolve(info);
+    };
+    img.onerror = () => {
+      const info = { ok: false };
+      logoAvailability.set(url, info);
+      resolve(info);
+    };
     img.src = url;
   });
 }
@@ -369,10 +377,15 @@ async function renderCrest(el, club, folder, cropPosition) {
   el.style.backgroundPosition = cropPosition ? `${cropPosition} center` : "center";
   el.textContent = "";
   const url = logoUrl(folder, club);
-  const hasLogo = await checkLogo(url);
-  if (hasLogo) {
+  const info = await checkLogo(url);
+  if (info.ok) {
     el.style.backgroundImage = `url("${url}")`;
     el.style.backgroundColor = "#ffffff";
+    // Nicht-quadratische Wappen (z. B. hochformatige Schild-Logos) würden mit
+    // "cover" oben/unten beschnitten. Nur wenn bewusst zugeschnitten werden
+    // soll (cropPosition gesetzt, z. B. Legenden-Porträts), bleibt "cover".
+    const isSquareish = Math.abs(info.ratio - 1) < 0.08;
+    el.style.backgroundSize = (isSquareish || cropPosition) ? "cover" : "contain";
   } else {
     const [c1, c2] = club.colors;
     el.style.background = `linear-gradient(145deg, ${c1}, ${c2})`;
