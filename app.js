@@ -115,7 +115,7 @@ const Voice = {
 
   playName(club, folder) {
     const dir = this.toAudioFolder(folder);
-    return this.playOrSay(`${dir}/${club.slug}.mp3`, club.short);
+    return this.playOrSay(`${dir}/${club.slug}.mp3`, club.tts || club.short);
   },
 
   playFacts(club, folder) {
@@ -132,7 +132,7 @@ const Voice = {
     const dir = this.toAudioFolder(folder);
     const introOk = await this.tryPlayFile("audio/phrases/richtig.mp3");
     const nameOk = introOk ? await this.tryPlayFile(`${dir}/${club.slug}.mp3`) : false;
-    if (!introOk || !nameOk) Speech.say(`Richtig! Das ist ${club.name}.`);
+    if (!introOk || !nameOk) Speech.say(`Richtig! Das ist ${club.tts || club.name}.`);
   }
 };
 
