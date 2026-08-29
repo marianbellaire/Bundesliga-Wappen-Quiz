@@ -6,6 +6,7 @@
 // "tts": optionale abweichende Vorlage für die Sprachausgabe (z. B.
 // "Hamburger Äss Fau" statt "Hamburger SV", damit die TTS-Engine es
 // nicht wie das englische Wort "Hamburger" ausspricht).
+// Single Point of Truth für alle short/tts-Werte: scripts/tts-review.csv
 // Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Bild fehlt).
 // "facts": optionaler Text, der bei Rundenstart vorgelesen wird (aktuell nur
 // bei "legenden" genutzt) – die Hinweise, an denen man die Person erkennt.
@@ -27,11 +28,11 @@ const LEAGUES = {
       { slug: "freiburg", name: "SC Freiburg", short: "SC Freiburg", abbr: "SCF", colors: ["#000000", "#E30613"], file: "freiburg.png" },
       { slug: "frankfurt", name: "Eintracht Frankfurt", short: "Eintracht Frankfurt", abbr: "SGE", colors: ["#E1000F", "#000000"], file: "frankfurt.png" },
       { slug: "augsburg", name: "FC Augsburg", short: "FC Augsburg", abbr: "FCA", colors: ["#BA3733", "#00953D"], file: "augsburg.png" },
-      { slug: "mainz", name: "1. FSV Mainz 05", short: "1. FSV Mainz 05", abbr: "M05", colors: ["#C3141E", "#FFFFFF"], file: "mainz.png" },
-      { slug: "union-berlin", name: "1. FC Union Berlin", short: "1. FC Union Berlin", abbr: "FCU", colors: ["#EB1923", "#FFCC00"], file: "union-berlin.png" },
+      { slug: "mainz", name: "1. FSV Mainz 05", short: "1. FSV Mainz 05", tts: "Erster FSV Mainz 05", abbr: "M05", colors: ["#C3141E", "#FFFFFF"], file: "mainz.png" },
+      { slug: "union-berlin", name: "1. FC Union Berlin", short: "1. FC Union Berlin", tts: "Erster FC Union Berlin", abbr: "FCU", colors: ["#EB1923", "#FFCC00"], file: "union-berlin.png" },
       { slug: "gladbach", name: "Borussia Mönchengladbach", short: "Borussia Mönchengladbach", abbr: "BMG", colors: ["#000000", "#00953D"], file: "gladbach.png" },
       { slug: "hamburg", name: "Hamburger SV", short: "Hamburger SV", tts: "Hamburger Äss Fau", abbr: "HSV", colors: ["#00224F", "#FFFFFF"], file: "hamburg.png" },
-      { slug: "koeln", name: "1. FC Köln", short: "1. FC Köln", abbr: "FCK", colors: ["#ED1C24", "#FFFFFF"], file: "koeln.png" },
+      { slug: "koeln", name: "1. FC Köln", short: "1. FC Köln", tts: "Erster FC Köln", abbr: "FCK", colors: ["#ED1C24", "#FFFFFF"], file: "koeln.png" },
       { slug: "bremen", name: "SV Werder Bremen", short: "SV Werder Bremen", abbr: "SVW", colors: ["#009036", "#FFFFFF"], file: "bremen.png" },
       { slug: "schalke", name: "FC Schalke 04", short: "FC Schalke 04", abbr: "S04", colors: ["#004C9B", "#FFFFFF"], file: "schalke.png" },
       { slug: "elversberg", name: "SV Elversberg", short: "SV Elversberg", abbr: "SVE", colors: ["#000000", "#1C63B7"], file: "elversberg.png" },
@@ -46,21 +47,21 @@ const LEAGUES = {
     completeText: "Du kennst jetzt alle Wappen der 2. Bundesliga!",
     discoverable: true,
     clubs: [
-      { slug: "magdeburg", name: "1. FC Magdeburg", short: "1. FC Magdeburg", abbr: "FCM", colors: ["#004B93", "#FFFFFF"], file: "1-fc-magdeburg-logo-footylogos.png" },
+      { slug: "magdeburg", name: "1. FC Magdeburg", short: "1. FC Magdeburg", tts: "Erster FC Magdeburg", abbr: "FCM", colors: ["#004B93", "#FFFFFF"], file: "1-fc-magdeburg-logo-footylogos.png" },
       { slug: "bielefeld", name: "Arminia Bielefeld", short: "Arminia Bielefeld", abbr: "DSC", colors: ["#000000", "#4A90D9"], file: "arminia-bielefeld-logo-footylogos.png" },
       { slug: "dresden", name: "Dynamo Dresden", short: "Dynamo Dresden", abbr: "SGD", colors: ["#F7CF00", "#000000"], file: "dynamo-dresden-logo-footylogos.png" },
       { slug: "braunschweig", name: "Eintracht Braunschweig", short: "Eintracht Braunschweig", abbr: "EBS", colors: ["#F6A800", "#0A2B6B"], file: "eintracht-braunschweig-logo-footylogos.png" },
       { slug: "cottbus", name: "Energie Cottbus", short: "Energie Cottbus", abbr: "FCE", colors: ["#E2001A", "#FFFFFF"], file: "energie-cottbus-logo-footylogos.png" },
-      { slug: "heidenheim", name: "1. FC Heidenheim", short: "1. FC Heidenheim", abbr: "FCH", colors: ["#C8102E", "#0A2C56"], file: "fc-heidenheim-logo-footylogos.png" },
-      { slug: "kaiserslautern", name: "1. FC Kaiserslautern", short: "1. FC Kaiserslautern", abbr: "FCK", colors: ["#C8102E", "#FFFFFF"], file: "fc-kaiserslautern-logo-footylogos.png" },
-      { slug: "nuernberg", name: "1. FC Nürnberg", short: "1. FC Nürnberg", abbr: "FCN", colors: ["#8B1538", "#000000"], file: "fc-nurnberg-logo-footylogos.png" },
+      { slug: "heidenheim", name: "1. FC Heidenheim", short: "1. FC Heidenheim", tts: "Erster FC Heidenheim", abbr: "FCH", colors: ["#C8102E", "#0A2C56"], file: "fc-heidenheim-logo-footylogos.png" },
+      { slug: "kaiserslautern", name: "1. FC Kaiserslautern", short: "1. FC Kaiserslautern", tts: "Erster FC Kaiserslautern", abbr: "FCK", colors: ["#C8102E", "#FFFFFF"], file: "fc-kaiserslautern-logo-footylogos.png" },
+      { slug: "nuernberg", name: "1. FC Nürnberg", short: "1. FC Nürnberg", tts: "Erster FC Nürnberg", abbr: "FCN", colors: ["#8B1538", "#000000"], file: "fc-nurnberg-logo-footylogos.png" },
       { slug: "stpauli", name: "FC St. Pauli", short: "FC St. Pauli", tts: "FC Sankt Pauli", abbr: "FCS", colors: ["#5B3A29", "#FFFFFF"], file: "fc-st-pauli-logo-footylogos.png" },
       { slug: "hannover", name: "Hannover 96", short: "Hannover 96", tts: "Hannover sechs und neunzig", abbr: "H96", colors: ["#00843D", "#000000"], file: "hannover-96-logo-footylogos.png" },
       { slug: "hertha", name: "Hertha BSC", short: "Hertha BSC", abbr: "BSC", colors: ["#004B9B", "#FFFFFF"], file: "hertha-bsc-logo-footylogos.png" },
       { slug: "kiel", name: "Holstein Kiel", short: "Holstein Kiel", abbr: "KSV", colors: ["#00447C", "#E2001A"], file: "holstein-kiel-logo-footylogos.png" },
       { slug: "karlsruhe", name: "Karlsruher SC", short: "Karlsruher SC", abbr: "KSC", colors: ["#0057A8", "#FFFFFF"], file: "karlsruher-sc-logo-footylogos.png" },
-      { slug: "greutherfuerth", name: "SpVgg Greuther Fürth", short: "SpVgg Greuther Fürth", abbr: "SGF", colors: ["#00612E", "#FFFFFF"], file: "spvgg-greuther-furth-logo-footylogos.png" },
-      { slug: "darmstadt", name: "SV Darmstadt 98", short: "SV Darmstadt 98", abbr: "SVD", colors: ["#003C78", "#FFFFFF"], file: "sv-darmstadt-98-logo-footylogos.png" },
+      { slug: "greutherfuerth", name: "SpVgg Greuther Fürth", short: "SpVgg Greuther Fürth", tts: "Spielvereinigung Greuther Fürth", abbr: "SGF", colors: ["#00612E", "#FFFFFF"], file: "spvgg-greuther-furth-logo-footylogos.png" },
+      { slug: "darmstadt", name: "SV Darmstadt 98", short: "SV Darmstadt 98", tts: "SV Darmstadt acht und neunzig", abbr: "SVD", colors: ["#003C78", "#FFFFFF"], file: "sv-darmstadt-98-logo-footylogos.png" },
       { slug: "bochum", name: "VfL Bochum", short: "VfL Bochum", abbr: "VFL", colors: ["#004C9E", "#FFFFFF"], file: "vfl-bochum-logo-footylogos.png" },
       { slug: "osnabrueck", name: "VfL Osnabrück", short: "VfL Osnabrück", abbr: "OSN", colors: ["#6A1B6E", "#FFFFFF"], file: "vfl-osnabruck-logo-footylogos.png" },
       { slug: "wolfsburg", name: "VfL Wolfsburg", short: "VfL Wolfsburg", abbr: "WOB", colors: ["#65B32E", "#FFFFFF"], file: "vfl-wolfsburg-logo-footylogos.png" },
@@ -75,7 +76,7 @@ const LEAGUES = {
     discoverable: true,
     clubs: [
       { slug: "duisburg", name: "MSV Duisburg", short: "MSV Duisburg", abbr: "MSV", colors: ["#0060A9", "#000000"], file: "msv-duisburg-logo-footylogos.png" },
-      { slug: "saarbruecken", name: "1. FC Saarbrücken", short: "1. FC Saarbrücken", abbr: "FCS", colors: ["#F4C300", "#0057A8"], file: "1-fc-saarbrucken-logo-footylogos.png" },
+      { slug: "saarbruecken", name: "1. FC Saarbrücken", short: "1. FC Saarbrücken", tts: "Erster FC Saarbrücken", abbr: "FCS", colors: ["#F4C300", "#0057A8"], file: "1-fc-saarbrucken-logo-footylogos.png" },
       { slug: "wuerzburg", name: "Würzburger Kickers", short: "Würzburger Kickers", abbr: "WÜK", colors: ["#E2001A", "#000000"], file: "wurzburger-kickers-logo-footylogos.png" },
       { slug: "aachen", name: "Alemannia Aachen", short: "Alemannia Aachen", abbr: "AAC", colors: ["#FFD400", "#00205B"], file: "alemannia-aachen-logo-footylogos.png" },
       { slug: "muenster", name: "Preußen Münster", short: "Preußen Münster", abbr: "SCP", colors: ["#000000", "#FFFFFF"], file: "preussen-munster-logo-footylogos.png" },
@@ -92,7 +93,7 @@ const LEAGUES = {
       { slug: "koeln-fortuna", name: "SC Fortuna Köln", short: "SC Fortuna Köln", abbr: "SCF", colors: ["#E2001A", "#FFFFFF"], file: "fortuna-koln-logo-footylogos.png" },
       { slug: "havelse", name: "TSV Havelse", short: "TSV Havelse", abbr: "HAV", colors: ["#00843D", "#FFFFFF"], file: "tsv-havelse-logo-footylogos.png" },
       { slug: "duesseldorf", name: "Fortuna Düsseldorf", short: "Fortuna Düsseldorf", abbr: "F95", colors: ["#E2001A", "#FFFFFF"], file: "fortuna-dusseldorf-logo-footylogos.png" },
-      { slug: "verl", name: "SC Verl", short: "SC Verl", abbr: "SCV", colors: ["#004B93", "#FFFFFF"], file: "sc-verl-logo-footylogos.png" },
+      { slug: "verl", name: "SC Verl", short: "SC Verl", tts: "SC Wärl", abbr: "SCV", colors: ["#004B93", "#FFFFFF"], file: "sc-verl-logo-footylogos.png" },
       { slug: "wiesbaden", name: "SV Wehen Wiesbaden", short: "SV Wehen Wiesbaden", abbr: "SVWW", colors: ["#004B93", "#E2001A"], file: "sv-wehen-wiesbaden-logo-footylogos.png" },
     ]
   },
