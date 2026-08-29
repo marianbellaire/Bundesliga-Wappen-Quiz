@@ -8,13 +8,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fußball Quiz">
 <title>Fußball Quiz</title>
-<link rel="manifest" href="manifest.json?v=34">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=34">
-<link rel="icon" href="icons/icon-192.png?v=34">
+<link rel="manifest" href="manifest.json?v=35">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=35">
+<link rel="icon" href="icons/icon-192.png?v=35">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=34">
+<link rel="stylesheet" href="styles.css?v=35">
 </head>
 <body>
 
@@ -99,11 +99,6 @@
       <input type="range" id="opt-rate" min="0.6" max="1.2" step="0.1" value="0.85">
     </label>
 
-    <label class="setting-row">
-      <span>Vorlesestimme</span>
-      <select id="opt-voice"></select>
-    </label>
-
     <button id="btn-reset-progress" class="text-button" type="button">Fortschritt zurücksetzen</button>
     <button id="btn-settings-back" class="big-button" type="button">Fertig</button>
   </div>
@@ -182,14 +177,14 @@
   </div>
 </section>
 
-<!-- WICHTIG: die Versionsnummer (?v=34) bei jeder Änderung an einer dieser
+<!-- WICHTIG: die Versionsnummer (?v=35) bei jeder Änderung an einer dieser
      Dateien (oder an styles.css/manifest.json/den Icons oben im <head>)
      um 1 hochzählen – das erzwingt frisches Laden trotz Service-Worker-
      Cache, auch wenn dieser selbst noch nicht aktualisiert wurde. Gleiche
      Nummer auch in manifest.json (icons) und service-worker.js
      (APP_SHELL) mitziehen. -->
-<script src="data.js?v=34"></script>
-<script src="icons.js?v=34"></script>
-<script src="app.js?v=34"></script>
+<script src="data.js?v=35"></script>
+<script src="icons.js?v=35"></script>
+<script src="app.js?v=35"></script>
 </body>
 </html>

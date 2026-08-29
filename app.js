@@ -8,7 +8,6 @@ const Settings = {
   sound: true,
   speech: true,
   rate: 0.85,
-  voiceURI: null,
 
   load() {
     try {
@@ -20,7 +19,7 @@ const Settings = {
     try {
       localStorage.setItem("wappenquiz.settings", JSON.stringify({
         choices: this.choices, sound: this.sound, speech: this.speech,
-        rate: this.rate, voiceURI: this.voiceURI
+        rate: this.rate
       }));
     } catch (e) { /* ignore */ }
   }
@@ -37,22 +36,21 @@ function wait(ms) {
    ============================================================ */
 const Speech = {
   voice: null,
-  onVoicesReady: null,
   pendingResolve: null, // wird aufgerufen, sobald die aktuelle Ansage endet/abbricht
 
+  // Wird nur noch als Fallback genutzt, falls ein vorproduzierter Clip mal
+  // nicht lädt - daher automatische Auswahl statt einstellbarer Stimme.
   init() {
     if (!("speechSynthesis" in window)) return;
     const pick = () => {
       const voices = this.germanVoices();
       this.voice =
-        (Settings.voiceURI && voices.find(v => v.voiceURI === Settings.voiceURI)) ||
         voices.find(v => /anna/i.test(v.name)) ||
         voices.find(v => /google/i.test(v.name)) ||
         voices.find(v => /natürlich|natural|online|enhanced|premium/i.test(v.name)) ||
         voices.find(v => v.lang === "de-DE") ||
         voices.find(v => v.lang && v.lang.startsWith("de")) ||
         null;
-      if (this.onVoicesReady) this.onVoicesReady();
     };
     pick();
     speechSynthesis.onvoiceschanged = pick;
@@ -61,13 +59,6 @@ const Speech = {
   germanVoices() {
     if (!("speechSynthesis" in window)) return [];
     return speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith("de"));
-  },
-
-  setVoice(voiceURI) {
-    Settings.voiceURI = voiceURI || null;
-    Settings.save();
-    const voices = this.germanVoices();
-    this.voice = (voiceURI && voices.find(v => v.voiceURI === voiceURI)) || this.voice;
   },
 
   say(text, { onend } = {}) {
@@ -672,28 +663,6 @@ function applySettingsToUI() {
   document.getElementById("opt-speech").checked = Settings.speech;
   document.getElementById("opt-rate").value = String(Settings.rate);
   document.getElementById("btn-mute").innerHTML = Settings.sound ? ICONS.speaker : ICONS.speakerMuted;
-  populateVoiceList();
-}
-
-function populateVoiceList() {
-  const select = document.getElementById("opt-voice");
-  const voices = Speech.germanVoices();
-  const current = select.value || Settings.voiceURI || "";
-  select.innerHTML = "";
-
-  const autoOpt = document.createElement("option");
-  autoOpt.value = "";
-  autoOpt.textContent = "Automatisch (empfohlen)";
-  select.appendChild(autoOpt);
-
-  voices.forEach(v => {
-    const opt = document.createElement("option");
-    opt.value = v.voiceURI;
-    opt.textContent = v.name + (v.lang !== "de-DE" ? ` (${v.lang})` : "");
-    select.appendChild(opt);
-  });
-
-  select.value = voices.some(v => v.voiceURI === current) ? current : "";
 }
 
 function wireUI() {
@@ -759,10 +728,6 @@ function wireUI() {
     Settings.rate = parseFloat(e.target.value);
     Settings.save();
   });
-  document.getElementById("opt-voice").addEventListener("change", e => {
-    Speech.setVoice(e.target.value);
-    Speech.say("Hallo! So klinge ich jetzt.");
-  });
   document.getElementById("btn-reset-progress").addEventListener("click", () => {
     Quiz.doneSlugs.clear();
     if (Quiz.league) Quiz.renderDots();
@@ -796,7 +761,6 @@ function wireUI() {
 document.addEventListener("DOMContentLoaded", () => {
   applyIcons();
   wireUI();
-  Speech.onVoicesReady = populateVoiceList;
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js").catch(() => {});
   }
