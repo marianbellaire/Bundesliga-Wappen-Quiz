@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
 const KEY = process.env.ELEVENLABS_API_KEY || fs.readFileSync(path.join(ROOT, ".elevenlabs_key"), "utf8").trim();
-const VOICE_ID = "EXAVITQu4vr4xnSDxMaL"; // Sarah
+const VOICE_ID = "SfNQWfFVL6TQ3DIRvFyM"; // Barbara Brave (native deutsche Stimme)
 const MODEL_ID = "eleven_multilingual_v2";
 
 // data.js in einem Sandbox-Kontext laden, um an LEAGUES zu kommen
