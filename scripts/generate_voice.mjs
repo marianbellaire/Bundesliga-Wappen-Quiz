@@ -33,9 +33,10 @@ function withPunctuation(text) {
 
 const jobs = [];
 
-// Richtig/Falsch-Phrasen ("Richtig! Das ist" bleibt bewusst ohne Punkt am
-// Ende, da direkt der Namens-Clip drangehängt wird)
-jobs.push({ out: "audio/phrases/richtig.mp3", text: "Richtig! Das ist" });
+// Richtig/Falsch-Phrasen. "Richtig!" ist bewusst kurz gehalten (statt
+// "Richtig! Das ist") - direkt danach folgt der Namens-Clip, zwei kurze
+// Ausrufe hintereinander wirken flüssiger als ein Satzfragment + Name.
+jobs.push({ out: "audio/phrases/richtig.mp3", text: "Richtig!" });
 jobs.push({ out: "audio/phrases/falsch.mp3", text: "Leider falsch!" });
 
 for (const [key, league] of Object.entries(LEAGUES)) {
