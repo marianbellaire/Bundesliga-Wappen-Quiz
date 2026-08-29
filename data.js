@@ -6,7 +6,7 @@
 // "tts": optionale abweichende Vorlage für die Sprachausgabe (z. B.
 // "Hamburger Äss Fau" statt "Hamburger SV", damit die TTS-Engine es
 // nicht wie das englische Wort "Hamburger" ausspricht).
-// Single Point of Truth für alle short/tts-Werte: scripts/tts-review.csv
+// Single Point of Truth für alle short/tts/facts-Werte: scripts/tts-review.csv
 // Farben werden nur für die Platzhalter-Embleme benutzt (falls ein Bild fehlt).
 // "facts": optionaler Text, der bei Rundenstart vorgelesen wird (aktuell nur
 // bei "legenden" genutzt) – die Hinweise, an denen man die Person erkennt.
