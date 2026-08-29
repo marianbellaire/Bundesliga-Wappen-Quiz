@@ -114,7 +114,8 @@ Speech.init();
    ============================================================ */
 const Voice = {
   currentAudio: null,
-  pendingDone: null, // wird aufgerufen, sobald der aktuelle Audio-Clip endet/abbricht
+  currentNodes: null, // aktive Web-Audio-Quellen (für nahtlose Übergänge, siehe playSeamlessPair)
+  pendingDone: null, // wird aufgerufen, sobald der aktuelle Audio-Clip/-Übergang endet/abbricht
 
   toAudioFolder(folder) {
     return folder.replace(/^logos\//, "audio/");
@@ -130,37 +131,25 @@ const Voice = {
     // unten fälschlich übersprungen wird, weil this.currentAudio bereits
     // null ist (Audio spielt dann unbemerkt im Hintergrund weiter).
     const audio = this.currentAudio;
+    const nodes = this.currentNodes;
     const done = this.pendingDone;
     this.currentAudio = null;
+    this.currentNodes = null;
     this.pendingDone = null;
     if (done) done(null); // null = absichtlich unterbrochen, kein Fallback-Speech auslösen
     if (audio) {
       try { audio.pause(); } catch (e) { /* ignore */ }
     }
+    if (nodes) {
+      nodes.forEach(n => { try { n.stop(); } catch (e) { /* ignore */ } });
+    }
     Speech.stop();
   },
 
-  // Beginnt das Laden einer Audiodatei im Hintergrund, OHNE sie abzuspielen.
-  // Wird genutzt, um den nächsten Clip schon während der vorherige noch
-  // läuft vorzuladen – sonst startet der Netzwerk-Fetch erst NACH Ende des
-  // ersten Clips, was den hörbaren "Stolperer" beim Übergang verursacht.
-  preload(url) {
-    const audio = new Audio();
-    audio.preload = "auto";
-    audio.src = url;
-    audio.playbackRate = Settings.rate;
-    audio.load();
-    return audio;
-  },
-
-  // urlOrAudio darf entweder eine URL (neues <audio>-Element wird erzeugt)
-  // oder ein bereits per preload() vorbereitetes <audio>-Element sein –
-  // dann ist der Netzwerk-Fetch meist schon abgeschlossen und die
-  // Wiedergabe startet praktisch verzögerungsfrei.
-  tryPlayFile(urlOrAudio) {
+  tryPlayFile(url) {
     this.stopAll(); // vorherigen Clip immer zuerst stoppen – nie zwei gleichzeitig
     return new Promise(resolve => {
-      const audio = urlOrAudio instanceof HTMLAudioElement ? urlOrAudio : new Audio(urlOrAudio);
+      const audio = new Audio(url);
       audio.playbackRate = Settings.rate;
       this.currentAudio = audio;
       let settled = false;
@@ -203,21 +192,97 @@ const Voice = {
     return this.playOrSay("audio/phrases/falsch.mp3", "Leider falsch!");
   },
 
+  bufferCache: new Map(), // url -> decodiertes AudioBuffer (richtig.mp3 wird ständig wiederverwendet)
+
+  async loadBuffer(ctx, url) {
+    if (this.bufferCache.has(url)) return this.bufferCache.get(url);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const arr = await res.arrayBuffer();
+    const buf = await ctx.decodeAudioData(arr);
+    this.bufferCache.set(url, buf);
+    return buf;
+  },
+
+  // Die ElevenLabs-Clips enthalten oft mehrere hundert ms Stille am Anfang/
+  // Ende. Selbst bei perfektem Scheduling wirkt das wie eine Pause. Diese
+  // Funktion ermittelt Start-/End-Offset ohne die Stille am Rand.
+  trimSilence(buf, threshold = 0.01) {
+    const data = buf.getChannelData(0);
+    const sr = buf.sampleRate;
+    let start = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (Math.abs(data[i]) > threshold) { start = i; break; }
+    }
+    let end = data.length - 1;
+    for (let i = data.length - 1; i >= 0; i--) {
+      if (Math.abs(data[i]) > threshold) { end = i; break; }
+    }
+    return { offset: start / sr, duration: Math.max(0, (end - start) / sr) };
+  },
+
+  // Spielt zwei Clips nahtlos hintereinander per Web Audio API: führende/
+  // nachlaufende Stille wird direkt beim Abspielen übersprungen (ohne die
+  // Audiodateien selbst zu verändern), dazwischen bleibt nur eine winzige,
+  // natürliche Mikropause. Läuft bewusst mit nativer Geschwindigkeit/
+  // Tonhöhe statt der Vorlesegeschwindigkeit, damit der Anschluss wirklich
+  // nahtlos bleibt (AudioBufferSourceNode.playbackRate verändert sonst die
+  // Tonhöhe hörbar). Gibt true/false zurück, oder null bei Unterbrechung.
+  async playSeamlessPair(urlA, urlB) {
+    const ctx = Sound.ensureCtx();
+    if (!ctx) return false;
+    let bufA, bufB;
+    try {
+      [bufA, bufB] = await Promise.all([this.loadBuffer(ctx, urlA), this.loadBuffer(ctx, urlB)]);
+    } catch (e) {
+      return false;
+    }
+
+    this.stopAll(); // vorherigen Clip immer zuerst stoppen – nie zwei gleichzeitig
+
+    const trimA = this.trimSilence(bufA);
+    const trimB = this.trimSilence(bufB);
+    const microGap = 0.03; // kurze, natürliche Atempause statt hartem Schnitt
+
+    return new Promise(resolve => {
+      const nodes = [];
+      let settled = false;
+      const done = ok => {
+        if (settled) return;
+        settled = true;
+        if (this.pendingDone === done) this.pendingDone = null;
+        if (this.currentNodes === nodes) this.currentNodes = null;
+        resolve(ok);
+      };
+      this.pendingDone = done;
+      this.currentNodes = nodes;
+
+      const t0 = ctx.currentTime + 0.03;
+      const srcA = ctx.createBufferSource();
+      srcA.buffer = bufA;
+      srcA.connect(ctx.destination);
+      srcA.start(t0, trimA.offset, trimA.duration);
+      nodes.push(srcA);
+
+      const t1 = t0 + trimA.duration + microGap;
+      const srcB = ctx.createBufferSource();
+      srcB.buffer = bufB;
+      srcB.connect(ctx.destination);
+      srcB.onended = () => done(true);
+      srcB.start(t1, trimB.offset, trimB.duration);
+      nodes.push(srcB);
+    });
+  },
+
   // Wichtig: läuft vollständig durch (inkl. evtl. Fallback-Speech), bevor
   // das Promise erfüllt wird – der Aufrufer kann so zuverlässig warten,
   // bis der Lösungs-Clip komplett zu Ende gesprochen wurde.
   async playCorrect(club, folder) {
     if (!Settings.speech) return;
     const dir = this.toAudioFolder(folder);
-    // Namens-Clip schon JETZT im Hintergrund laden, während "Richtig!" noch
-    // läuft – dadurch ist er beim Übergang schon bereit statt erst dann
-    // vom Netzwerk nachgeladen zu werden (das verursachte den Stotterer).
-    const preloadedName = this.preload(`${dir}/${club.slug}.mp3`);
-    const introOk = await this.tryPlayFile("audio/phrases/richtig.mp3");
-    if (introOk === null) return; // unterbrochen, z. B. Screen verlassen
-    const nameOk = introOk ? await this.tryPlayFile(preloadedName) : false;
-    if (nameOk === null) return;
-    if (!introOk || !nameOk) {
+    const ok = await this.playSeamlessPair("audio/phrases/richtig.mp3", `${dir}/${club.slug}.mp3`);
+    if (ok === null) return; // unterbrochen, z. B. Screen verlassen
+    if (!ok) {
       await new Promise(resolve => Speech.say(`Richtig! Das ist ${club.tts || club.name}.`, { onend: resolve }));
     }
   }
