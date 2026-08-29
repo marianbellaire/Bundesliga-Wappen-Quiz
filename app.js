@@ -124,14 +124,18 @@ const Voice = {
   // Fallback). Wird vor jeder neuen Ansage sowie bei jedem Screen-/Runden-
   // wechsel aufgerufen, damit sich nie zwei Voice-Clips überlagern.
   stopAll() {
-    if (this.pendingDone) {
-      const done = this.pendingDone;
-      this.pendingDone = null;
-      done(null); // null = absichtlich unterbrochen, kein Fallback-Speech auslösen
-    }
-    if (this.currentAudio) {
-      try { this.currentAudio.pause(); } catch (e) { /* ignore */ }
-      this.currentAudio = null;
+    // Erst BEIDE Referenzen einfangen und auf Voice-Ebene leeren, dann erst
+    // "done" aufrufen – done() räumt intern selbst this.currentAudio/
+    // this.pendingDone auf, was sonst dazu führt, dass der pause()-Aufruf
+    // unten fälschlich übersprungen wird, weil this.currentAudio bereits
+    // null ist (Audio spielt dann unbemerkt im Hintergrund weiter).
+    const audio = this.currentAudio;
+    const done = this.pendingDone;
+    this.currentAudio = null;
+    this.pendingDone = null;
+    if (done) done(null); // null = absichtlich unterbrochen, kein Fallback-Speech auslösen
+    if (audio) {
+      try { audio.pause(); } catch (e) { /* ignore */ }
     }
     Speech.stop();
   },
