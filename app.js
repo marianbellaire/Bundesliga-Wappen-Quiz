@@ -140,10 +140,27 @@ const Voice = {
     Speech.stop();
   },
 
-  tryPlayFile(url) {
+  // Beginnt das Laden einer Audiodatei im Hintergrund, OHNE sie abzuspielen.
+  // Wird genutzt, um den nächsten Clip schon während der vorherige noch
+  // läuft vorzuladen – sonst startet der Netzwerk-Fetch erst NACH Ende des
+  // ersten Clips, was den hörbaren "Stolperer" beim Übergang verursacht.
+  preload(url) {
+    const audio = new Audio();
+    audio.preload = "auto";
+    audio.src = url;
+    audio.playbackRate = Settings.rate;
+    audio.load();
+    return audio;
+  },
+
+  // urlOrAudio darf entweder eine URL (neues <audio>-Element wird erzeugt)
+  // oder ein bereits per preload() vorbereitetes <audio>-Element sein –
+  // dann ist der Netzwerk-Fetch meist schon abgeschlossen und die
+  // Wiedergabe startet praktisch verzögerungsfrei.
+  tryPlayFile(urlOrAudio) {
     this.stopAll(); // vorherigen Clip immer zuerst stoppen – nie zwei gleichzeitig
     return new Promise(resolve => {
-      const audio = new Audio(url);
+      const audio = urlOrAudio instanceof HTMLAudioElement ? urlOrAudio : new Audio(urlOrAudio);
       audio.playbackRate = Settings.rate;
       this.currentAudio = audio;
       let settled = false;
@@ -192,9 +209,13 @@ const Voice = {
   async playCorrect(club, folder) {
     if (!Settings.speech) return;
     const dir = this.toAudioFolder(folder);
+    // Namens-Clip schon JETZT im Hintergrund laden, während "Richtig!" noch
+    // läuft – dadurch ist er beim Übergang schon bereit statt erst dann
+    // vom Netzwerk nachgeladen zu werden (das verursachte den Stotterer).
+    const preloadedName = this.preload(`${dir}/${club.slug}.mp3`);
     const introOk = await this.tryPlayFile("audio/phrases/richtig.mp3");
     if (introOk === null) return; // unterbrochen, z. B. Screen verlassen
-    const nameOk = introOk ? await this.tryPlayFile(`${dir}/${club.slug}.mp3`) : false;
+    const nameOk = introOk ? await this.tryPlayFile(preloadedName) : false;
     if (nameOk === null) return;
     if (!introOk || !nameOk) {
       await new Promise(resolve => Speech.say(`Richtig! Das ist ${club.tts || club.name}.`, { onend: resolve }));
