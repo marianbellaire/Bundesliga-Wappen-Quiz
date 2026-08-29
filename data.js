@@ -40,7 +40,7 @@ const LEAGUES = {
       { slug: "bremen", name: "SV Werder Bremen", short: "SV Werder Bremen", abbr: "SVW", colors: ["#009036", "#FFFFFF"], file: "bremen.png" },
       { slug: "schalke", name: "FC Schalke 04", short: "FC Schalke 04", abbr: "S04", colors: ["#004C9B", "#FFFFFF"], file: "schalke.png" },
       { slug: "elversberg", name: "SV Elversberg", short: "SV Elversberg", abbr: "SVE", colors: ["#000000", "#1C63B7"], file: "elversberg.png" },
-      { slug: "paderborn", name: "SC Paderborn 07", short: "SC Paderborn 07", abbr: "SCP", colors: ["#00509F", "#000000"], file: "paderborn.png" },
+      { slug: "paderborn", name: "SC Paderborn 07", short: "SC Paderborn 07", tts: "SC Paderborn Null Sieben", abbr: "SCP", colors: ["#00509F", "#000000"], file: "paderborn.png" },
     ]
   },
 
