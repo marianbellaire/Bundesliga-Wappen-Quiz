@@ -64,7 +64,7 @@ const LEAGUES = {
       { slug: "darmstadt", name: "SV Darmstadt 98", short: "SV Darmstadt 98", tts: "SV Darmstadt acht und neunzig", abbr: "SVD", colors: ["#003C78", "#FFFFFF"], file: "sv-darmstadt-98-logo-footylogos.png" },
       { slug: "bochum", name: "VfL Bochum", short: "VfL Bochum", abbr: "VFL", colors: ["#004C9E", "#FFFFFF"], file: "vfl-bochum-logo-footylogos.png" },
       { slug: "osnabrueck", name: "VfL Osnabrück", short: "VfL Osnabrück", abbr: "OSN", colors: ["#6A1B6E", "#FFFFFF"], file: "vfl-osnabruck-logo-footylogos.png" },
-      { slug: "wolfsburg", name: "VfL Wolfsburg", short: "VfL Wolfsburg", abbr: "WOB", colors: ["#65B32E", "#FFFFFF"], file: "vfl-wolfsburg-logo-footylogos.png" },
+      { slug: "wolfsburg", name: "VfL Wolfsburg", short: "VfL Wolfsburg", tts: "Fau Äff L Wolfsburg", abbr: "WOB", colors: ["#65B32E", "#FFFFFF"], file: "vfl-wolfsburg-logo-footylogos.png" },
     ]
   },
 
