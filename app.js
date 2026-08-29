@@ -27,12 +27,18 @@ const Settings = {
 };
 Settings.load();
 
+// Kleine Hilfsfunktion für Wartezeiten (z. B. Konfetti/Bounce ausklingen lassen).
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /* ============================================================
    Sprachausgabe (Web Speech API)
    ============================================================ */
 const Speech = {
   voice: null,
   onVoicesReady: null,
+  pendingResolve: null, // wird aufgerufen, sobald die aktuelle Ansage endet/abbricht
 
   init() {
     if (!("speechSynthesis" in window)) return;
@@ -69,17 +75,33 @@ const Speech = {
       if (onend) onend();
       return;
     }
-    speechSynthesis.cancel();
+    this.stop(); // vorherige Ansage sauber beenden, bevor eine neue startet
     const u = new SpeechSynthesisUtterance(text);
     u.lang = "de-DE";
     if (this.voice) u.voice = this.voice;
     u.rate = Settings.rate;
     u.pitch = 1.0; // normale Tonhöhe – Auswahl der Stimme selbst macht den Ton freundlich
-    if (onend) u.onend = onend;
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      if (this.pendingResolve === done) this.pendingResolve = null;
+      if (onend) onend();
+    };
+    this.pendingResolve = done;
+    u.onend = done;
+    u.onerror = done;
     speechSynthesis.speak(u);
   },
 
+  // Bricht die laufende Ansage sofort ab und löst ein evtl. wartendes
+  // onend/Promise trotzdem aus (damit nichts endlos hängen bleibt).
   stop() {
+    if (this.pendingResolve) {
+      const done = this.pendingResolve;
+      this.pendingResolve = null;
+      done();
+    }
     if ("speechSynthesis" in window) speechSynthesis.cancel();
   }
 };
@@ -91,26 +113,59 @@ Speech.init();
    (Browser-TTS) zurück, falls eine Datei mal fehlt/nicht lädt.
    ============================================================ */
 const Voice = {
+  currentAudio: null,
+  pendingDone: null, // wird aufgerufen, sobald der aktuelle Audio-Clip endet/abbricht
+
   toAudioFolder(folder) {
     return folder.replace(/^logos\//, "audio/");
   },
 
+  // Stoppt sofort jede laufende Sprachausgabe (Audiodatei + Browser-TTS-
+  // Fallback). Wird vor jeder neuen Ansage sowie bei jedem Screen-/Runden-
+  // wechsel aufgerufen, damit sich nie zwei Voice-Clips überlagern.
+  stopAll() {
+    if (this.pendingDone) {
+      const done = this.pendingDone;
+      this.pendingDone = null;
+      done(null); // null = absichtlich unterbrochen, kein Fallback-Speech auslösen
+    }
+    if (this.currentAudio) {
+      try { this.currentAudio.pause(); } catch (e) { /* ignore */ }
+      this.currentAudio = null;
+    }
+    Speech.stop();
+  },
+
   tryPlayFile(url) {
+    this.stopAll(); // vorherigen Clip immer zuerst stoppen – nie zwei gleichzeitig
     return new Promise(resolve => {
       const audio = new Audio(url);
       audio.playbackRate = Settings.rate;
+      this.currentAudio = audio;
       let settled = false;
-      const done = ok => { if (!settled) { settled = true; resolve(ok); } };
+      const done = ok => {
+        if (settled) return;
+        settled = true;
+        if (this.pendingDone === done) this.pendingDone = null;
+        if (this.currentAudio === audio) this.currentAudio = null;
+        resolve(ok);
+      };
+      this.pendingDone = done;
       audio.addEventListener("ended", () => done(true));
       audio.addEventListener("error", () => done(false));
       audio.play().catch(() => done(false));
     });
   },
 
+  // Spielt die Datei ab und wartet auf deren vollständiges Ende (oder das
+  // Ende der Fallback-Ansage). ok === null bedeutet "absichtlich
+  // unterbrochen" (Screen-/Rundenwechsel) – dann KEIN Fallback-Speech.
   async playOrSay(url, fallbackText) {
     if (!Settings.speech) return;
     const ok = await this.tryPlayFile(url);
-    if (!ok) Speech.say(fallbackText);
+    if (ok === false) {
+      await new Promise(resolve => Speech.say(fallbackText, { onend: resolve }));
+    }
   },
 
   playName(club, folder) {
@@ -127,12 +182,19 @@ const Voice = {
     return this.playOrSay("audio/phrases/falsch.mp3", "Leider falsch!");
   },
 
+  // Wichtig: läuft vollständig durch (inkl. evtl. Fallback-Speech), bevor
+  // das Promise erfüllt wird – der Aufrufer kann so zuverlässig warten,
+  // bis der Lösungs-Clip komplett zu Ende gesprochen wurde.
   async playCorrect(club, folder) {
     if (!Settings.speech) return;
     const dir = this.toAudioFolder(folder);
     const introOk = await this.tryPlayFile("audio/phrases/richtig.mp3");
+    if (introOk === null) return; // unterbrochen, z. B. Screen verlassen
     const nameOk = introOk ? await this.tryPlayFile(`${dir}/${club.slug}.mp3`) : false;
-    if (!introOk || !nameOk) Speech.say(`Richtig! Das ist ${club.tts || club.name}.`);
+    if (nameOk === null) return;
+    if (!introOk || !nameOk) {
+      await new Promise(resolve => Speech.say(`Richtig! Das ist ${club.tts || club.name}.`, { onend: resolve }));
+    }
   }
 };
 
@@ -261,7 +323,7 @@ function confettiBurst(layer) {
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-  Speech.stop();
+  Voice.stopAll();
 }
 
 /* ============================================================
@@ -274,6 +336,8 @@ const Quiz = {
   doneSlugs: new Set(),
   current: null,
   locked: false,
+  token: 0, // wird bei jedem Neustart/Verlassen hochgezählt, um veraltete Timer/Awaits zu entwerten
+  factsTimeout: null, // verzögertes Abspielen des Legenden-Hinweistons
 
   refillBag() {
     this.bag = this.league.clubs.map(c => c.slug);
@@ -284,6 +348,8 @@ const Quiz = {
   },
 
   start(leagueKey) {
+    this.token++;
+    clearTimeout(this.factsTimeout);
     this.leagueKey = leagueKey;
     this.league = LEAGUES[leagueKey];
     this.doneSlugs.clear();
@@ -311,6 +377,7 @@ const Quiz = {
   },
 
   nextRound() {
+    clearTimeout(this.factsTimeout);
     if (this.doneSlugs.size >= this.league.clubs.length) {
       this.finish();
       return;
@@ -341,6 +408,8 @@ const Quiz = {
   },
 
   renderRound() {
+    Voice.stopAll(); // sauberer Übergang: nie läuft noch die Ansage der vorigen Runde
+
     const crestEl = document.getElementById("crest");
     crestEl.classList.remove("bounce", "shake");
     renderCrest(crestEl, this.current.correctClub, this.league.folder, this.league.cropPosition);
@@ -352,7 +421,11 @@ const Quiz = {
     if (facts) {
       document.getElementById("facts-text").textContent = facts;
       factsPanel.hidden = false;
-      setTimeout(() => Voice.playFacts(this.current.correctClub, this.league.folder), 500);
+      const roundToken = this.token;
+      this.factsTimeout = setTimeout(() => {
+        // nur abspielen, wenn zwischenzeitlich nicht neu gestartet/verlassen wurde
+        if (roundToken === this.token) Voice.playFacts(this.current.correctClub, this.league.folder);
+      }, 500);
     } else {
       factsPanel.hidden = true;
     }
@@ -386,7 +459,7 @@ const Quiz = {
     });
   },
 
-  choose(club, btn) {
+  async choose(club, btn) {
     if (this.locked) return;
     Sound.tap();
     const isCorrect = club.slug === this.current.correctClub.slug;
@@ -394,16 +467,24 @@ const Quiz = {
 
     if (isCorrect) {
       this.locked = true;
+      clearTimeout(this.factsTimeout); // Legenden-Hinweiston nicht mehr verzögert nachschieben
+      const roundToken = this.token;
       btn.classList.add("correct");
       crestEl.classList.add("bounce");
       Sound.correct();
       confettiBurst(document.getElementById("feedback-layer"));
       this.doneSlugs.add(club.slug);
       this.updateDots();
-      Voice.playCorrect(club, this.league.folder);
-
       document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
-      setTimeout(() => this.nextRound(), 2600);
+
+      // Erst weiter, wenn der Lösungs-Clip WIRKLICH komplett zu Ende
+      // gesprochen ist (mindestens so lange wie Konfetti/Bounce brauchen).
+      await Promise.all([
+        Voice.playCorrect(club, this.league.folder),
+        wait(1400)
+      ]);
+      if (roundToken !== this.token) return; // zwischenzeitlich verlassen/neu gestartet
+      this.nextRound();
     } else {
       // Beliebig oft falsch auswählen dürfen – jedes Mal erneut Ton, Ansage
       // und Wackel-Animation, auch bei schnell wiederholtem Tippen auf
@@ -422,6 +503,7 @@ const Quiz = {
   },
 
   finish() {
+    clearTimeout(this.factsTimeout);
     Sound.fanfare();
     confettiBurst(document.getElementById("feedback-layer"));
     document.getElementById("complete-subtitle").textContent =
@@ -591,7 +673,11 @@ function wireUI() {
     if (Quiz.league) Quiz.renderDots();
   });
 
-  document.getElementById("btn-quiz-home").addEventListener("click", () => showScreen("screen-start"));
+  document.getElementById("btn-quiz-home").addEventListener("click", () => {
+    Quiz.token++; // entwertet ein evtl. noch wartendes choose() -> nextRound()
+    clearTimeout(Quiz.factsTimeout);
+    showScreen("screen-start");
+  });
   document.getElementById("btn-mute").addEventListener("click", () => {
     Settings.sound = !Settings.sound;
     Settings.save();
