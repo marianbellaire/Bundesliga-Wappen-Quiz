@@ -369,7 +369,7 @@ const Sound = {
     if (!Settings.sound) return;
     const ctx = this.ensureCtx();
     if (!ctx) return;
-    const ok = await this.playEffectFile("audio/phrases/Torjubel.mp3", { gain: 0.5 });
+    const ok = await this.playEffectFile("audio/phrases/Torjubel.mp3", { gain: 0.18 });
     if (!ok) {
       // Fallback, falls die Datei mal nicht verfügbar ist: kurzer Dreiklang
       const t = ctx.currentTime;
