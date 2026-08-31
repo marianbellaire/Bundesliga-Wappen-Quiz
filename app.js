@@ -305,12 +305,59 @@ const Sound = {
     osc.start(startTime);
     osc.stop(startTime + dur + 0.05);
   },
-  correct() {
+  effectBufferCache: new Map(), // url -> decodiertes AudioBuffer
+  currentEffectSource: null,
+
+  async loadEffectBuffer(ctx, url) {
+    if (this.effectBufferCache.has(url)) return this.effectBufferCache.get(url);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const arr = await res.arrayBuffer();
+    const buf = await ctx.decodeAudioData(arr);
+    this.effectBufferCache.set(url, buf);
+    return buf;
+  },
+
+  // Spielt eine echte Audiodatei als Effekt (z. B. Torjubel) statt eines
+  // synthetischen Tons. Läuft "fire and forget" – blockiert den
+  // Rundenablauf nicht. Gibt true/false zurück, je nachdem ob es geklappt hat.
+  async playEffectFile(url) {
+    const ctx = this.ensureCtx();
+    if (!ctx) return false;
+    try {
+      const buf = await this.loadEffectBuffer(ctx, url);
+      this.stopEffect();
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.onended = () => { if (this.currentEffectSource === src) this.currentEffectSource = null; };
+      src.start();
+      this.currentEffectSource = src;
+      return true;
+    } catch (e) {
+      return false; // z. B. Datei fehlt/Decoding schlägt fehl (z. B. beim allerersten Laden offline)
+    }
+  },
+
+  // Beendet einen noch laufenden Effekt-Sound (z. B. beim Rundenwechsel),
+  // damit sich Torjubel-Clips bei schnellem Weiterklicken nicht überlagern.
+  stopEffect() {
+    if (this.currentEffectSource) {
+      try { this.currentEffectSource.stop(); } catch (e) {}
+      this.currentEffectSource = null;
+    }
+  },
+
+  async correct() {
     if (!Settings.sound) return;
     const ctx = this.ensureCtx();
     if (!ctx) return;
-    const t = ctx.currentTime;
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, t + i * 0.09, 0.35, "triangle"));
+    const ok = await this.playEffectFile("audio/phrases/Torjubel.mp3");
+    if (!ok) {
+      // Fallback, falls die Datei mal nicht verfügbar ist: kurzer Dreiklang
+      const t = ctx.currentTime;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, t + i * 0.09, 0.35, "triangle"));
+    }
   },
   tryAgain() {
     if (!Settings.sound) return;
@@ -398,13 +445,22 @@ async function renderCrest(el, club, folder, cropPosition) {
    ============================================================ */
 function confettiBurst(layer) {
   const colors = ["#cda449", "#e6c374", "#3fa06d", "#eef2f6", "#8a6d33"];
-  const count = 26;
+  const count = 34;
   for (let i = 0; i < count; i++) {
     const piece = document.createElement("div");
     piece.className = "confetti";
+    const round = Math.random() < 0.4; // Mix aus eckigen und runden Schnipseln
+    const size = 6 + Math.random() * 7;
+    piece.style.setProperty("--w", (round ? size : size * 0.7) + "px");
+    piece.style.setProperty("--h", (round ? size : size * 1.6) + "px");
+    piece.style.setProperty("--r", round ? "50%" : "2px");
+    // Drift nach links/rechts + Rotationsrichtung/-menge variieren, statt
+    // dass jedes Teilchen exakt gerade und gleich schnell rotierend fällt.
+    piece.style.setProperty("--x", (Math.random() * 160 - 80) + "px");
+    piece.style.setProperty("--spin", (Math.random() < 0.5 ? -1 : 1) * (360 + Math.random() * 360) + "deg");
     piece.style.left = Math.random() * 100 + "vw";
     piece.style.background = colors[i % colors.length];
-    piece.style.animationDuration = 1.1 + Math.random() * 0.9 + "s";
+    piece.style.animationDuration = 1.2 + Math.random() * 1 + "s";
     piece.style.opacity = String(0.7 + Math.random() * 0.3);
     layer.appendChild(piece);
     piece.addEventListener("animationend", () => piece.remove());
@@ -503,9 +559,11 @@ const Quiz = {
 
   renderRound() {
     Voice.stopAll(); // sauberer Übergang: nie läuft noch die Ansage der vorigen Runde
+    Sound.stopEffect(); // ...und auch kein nachklingender Torjubel aus der letzten Runde
 
     const crestEl = document.getElementById("crest");
     crestEl.classList.remove("bounce", "shake");
+    document.getElementById("success-ring").classList.remove("pulse");
     renderCrest(crestEl, this.current.correctClub, this.league.folder, this.league.cropPosition);
 
     document.getElementById("hint-label").textContent = this.league.promptLabel || "Wer oder was ist das?";
@@ -565,6 +623,10 @@ const Quiz = {
       const roundToken = this.token;
       btn.classList.add("correct");
       crestEl.classList.add("bounce");
+      const ringEl = document.getElementById("success-ring");
+      ringEl.classList.remove("pulse");
+      void ringEl.offsetWidth; // Reflow erzwingen, damit die Animation bei schnell aufeinanderfolgenden Runden neu startet
+      ringEl.classList.add("pulse");
       Sound.correct();
       confettiBurst(document.getElementById("feedback-layer"));
       this.doneSlugs.add(club.slug);
