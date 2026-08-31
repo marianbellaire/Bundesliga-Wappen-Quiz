@@ -319,24 +319,37 @@ const Sound = {
   },
 
   // Spielt eine echte Audiodatei als Effekt (z. B. Torjubel) statt eines
-  // synthetischen Tons. Läuft "fire and forget" – blockiert den
-  // Rundenablauf nicht. Gibt true/false zurück, je nachdem ob es geklappt hat.
-  async playEffectFile(url) {
+  // synthetischen Tons, optional leiser über eine eigene Gain-Node (damit
+  // z. B. die "Richtig!"-Ansage gut hörbar bleibt). Das zurückgegebene
+  // Promise löst erst auf, wenn der Clip WIRKLICH zu Ende gespielt hat
+  // (true), oder sofort mit false, falls er gar nicht geladen werden konnte.
+  async playEffectFile(url, { gain = 1 } = {}) {
     const ctx = this.ensureCtx();
     if (!ctx) return false;
+    let buf;
     try {
-      const buf = await this.loadEffectBuffer(ctx, url);
-      this.stopEffect();
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      src.onended = () => { if (this.currentEffectSource === src) this.currentEffectSource = null; };
-      src.start();
-      this.currentEffectSource = src;
-      return true;
+      buf = await this.loadEffectBuffer(ctx, url);
     } catch (e) {
       return false; // z. B. Datei fehlt/Decoding schlägt fehl (z. B. beim allerersten Laden offline)
     }
+    this.stopEffect();
+    return new Promise(resolve => {
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = gain;
+      src.connect(gainNode).connect(ctx.destination);
+      let settled = false;
+      const finish = ok => {
+        if (settled) return;
+        settled = true;
+        if (this.currentEffectSource === src) this.currentEffectSource = null;
+        resolve(ok);
+      };
+      src.onended = () => finish(true);
+      this.currentEffectSource = src;
+      src.start();
+    });
   },
 
   // Beendet einen noch laufenden Effekt-Sound (z. B. beim Rundenwechsel),
@@ -348,15 +361,21 @@ const Sound = {
     }
   },
 
+  // Läuft vollständig durch, bis der Torjubel (bzw. Fallback-Dreiklang)
+  // wirklich zu Ende ist – der Aufrufer kann so damit warten, bevor er zur
+  // nächsten Runde wechselt. Deutlich leiser als voller Lautstärke (gain),
+  // damit die "Richtig!"-Sprachausgabe darüber gut hörbar bleibt.
   async correct() {
     if (!Settings.sound) return;
     const ctx = this.ensureCtx();
     if (!ctx) return;
-    const ok = await this.playEffectFile("audio/phrases/Torjubel.mp3");
+    const ok = await this.playEffectFile("audio/phrases/Torjubel.mp3", { gain: 0.5 });
     if (!ok) {
       // Fallback, falls die Datei mal nicht verfügbar ist: kurzer Dreiklang
       const t = ctx.currentTime;
+      const lastTone = 3 * 0.09;
       [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, t + i * 0.09, 0.35, "triangle"));
+      await wait((lastTone + 0.35) * 1000);
     }
   },
   tryAgain() {
@@ -627,16 +646,17 @@ const Quiz = {
       ringEl.classList.remove("pulse");
       void ringEl.offsetWidth; // Reflow erzwingen, damit die Animation bei schnell aufeinanderfolgenden Runden neu startet
       ringEl.classList.add("pulse");
-      Sound.correct();
+      const torjubelDone = Sound.correct();
       confettiBurst(document.getElementById("feedback-layer"));
       this.doneSlugs.add(club.slug);
       this.updateDots();
       document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
 
-      // Erst weiter, wenn der Lösungs-Clip WIRKLICH komplett zu Ende
-      // gesprochen ist (mindestens so lange wie Konfetti/Bounce brauchen).
+      // Erst weiter, wenn Lösungs-Clip UND Torjubel wirklich komplett zu
+      // Ende sind (mindestens so lange wie Konfetti/Bounce brauchen).
       await Promise.all([
         Voice.playCorrect(club, this.league.folder),
+        torjubelDone,
         wait(1400)
       ]);
       if (roundToken !== this.token) return; // zwischenzeitlich verlassen/neu gestartet
