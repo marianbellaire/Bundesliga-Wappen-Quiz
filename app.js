@@ -799,6 +799,11 @@ function wireUI() {
     Sound.bling();
     Quiz.start("legenden");
   });
+  document.getElementById("mode-nationen").addEventListener("click", () => {
+    Sound.ensureCtx();
+    Sound.bling();
+    Quiz.start("nationen");
+  });
   document.getElementById("btn-facts-replay").addEventListener("click", () => {
     Sound.ensureCtx();
     Voice.playFacts(Quiz.current.correctClub, Quiz.league.folder);

@@ -1,7 +1,7 @@
 # ⚽ Fußball Quiz
 
 Eine einfache PWA für Handy & Tablet, mit der Kinder Vereinswappen (Bundesliga,
-2. Bundesliga, 3. Liga – Saison 2026/27) und Fußball-Legenden spielerisch lernen –
+2. Bundesliga, 3. Liga – Saison 2026/27), Fußball-Legenden und Länderflaggen spielerisch lernen –
 per Multiple-Choice-Quiz mit Bild, Ton und Sprachausgabe.
 
 ## Funktionen
@@ -11,6 +11,8 @@ per Multiple-Choice-Quiz mit Bild, Ton und Sprachausgabe.
   jederzeit erneut). Bei richtiger Antwort: Konfetti, Jingle, und der Vereinsname
   wird automatisch laut vorgelesen. Bei falscher Antwort: sanfter Hinweiston,
   beliebig oft neu versuchen.
+- **Nationen**: 25 bekannte Fußball-Nationen anhand ihrer Landesflagge erraten
+  (Flaggen-SVGs aus dem MIT-lizenzierten Paket `flag-icons`, in `logos/Nationen/`).
 - **Entdecken-Modus**: Alle 18 Wappen zum freien Durchblättern, mit Sprachausgabe –
   gut zum ersten Kennenlernen vor dem eigentlichen Quiz.
 - **Einstellungen** (⚙️ auf dem Startbildschirm, für Erwachsene): Anzahl der

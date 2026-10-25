@@ -218,5 +218,42 @@ const LEAGUES = {
         facts: "Dieser Spieler kommt aus Italien und spielte 19 Jahre lang für Juventus Turin, für die er mehr Tore erzielte als jeder andere Spieler. Seine Tore aus dem spitzen Winkel wurden so berühmt, dass diese Ecke des Strafraums „Zona Del Piero” genannt wird. Mit Italien wurde er 2006 Weltmeister.",
         factsTts: "Dieser Spieler kommt aus Italien und spielte neunzehn Jahre lang für Juventus Turin, für die er mehr Tore erzielte als jeder andere Spieler. Seine Tore aus dem spitzen Winkel wurden so berühmt, dass diese Ecke des Strafraums Zona Del Piero genannt wird. Mit Italien wurde er zweitausendsechs Weltmeister." },
     ]
+  },
+
+  // Landesflaggen: freie SVGs aus dem "flag-icons"-Paket (MIT-Lizenz), quadratische 1x1-Variante,
+  // Dateiname = ISO-Ländercode.
+  nationen: {
+    label: "Nationen",
+    folder: "logos/Nationen",
+    promptLabel: "Welches Land ist das?",
+    completeText: "Du kennst jetzt alle Länderflaggen!",
+    discoverable: true,
+    clubs: [
+      { slug: "deutschland", name: "Deutschland", short: "Deutschland", abbr: "GER", colors: ["#000000", "#DD0000"], file: "de.svg" },
+      { slug: "brasilien", name: "Brasilien", short: "Brasilien", abbr: "BRA", colors: ["#009739", "#FEDD00"], file: "br.svg" },
+      { slug: "argentinien", name: "Argentinien", short: "Argentinien", abbr: "ARG", colors: ["#75AADB", "#FFFFFF"], file: "ar.svg" },
+      { slug: "frankreich", name: "Frankreich", short: "Frankreich", abbr: "FRA", colors: ["#002654", "#ED2939"], file: "fr.svg" },
+      { slug: "spanien", name: "Spanien", short: "Spanien", abbr: "ESP", colors: ["#AA151B", "#F1BF00"], file: "es.svg" },
+      { slug: "italien", name: "Italien", short: "Italien", abbr: "ITA", colors: ["#009246", "#CE2B37"], file: "it.svg" },
+      { slug: "england", name: "England", short: "England", abbr: "ENG", colors: ["#FFFFFF", "#CE1124"], file: "gb-eng.svg" },
+      { slug: "niederlande", name: "Niederlande", short: "Niederlande", abbr: "NED", colors: ["#AE1C28", "#21468B"], file: "nl.svg" },
+      { slug: "portugal", name: "Portugal", short: "Portugal", abbr: "POR", colors: ["#046A38", "#DA291C"], file: "pt.svg" },
+      { slug: "belgien", name: "Belgien", short: "Belgien", abbr: "BEL", colors: ["#000000", "#FDDA24"], file: "be.svg" },
+      { slug: "kroatien", name: "Kroatien", short: "Kroatien", abbr: "CRO", colors: ["#FF0000", "#171796"], file: "hr.svg" },
+      { slug: "uruguay", name: "Uruguay", short: "Uruguay", abbr: "URU", colors: ["#0038A8", "#FCD116"], file: "uy.svg" },
+      { slug: "mexiko", name: "Mexiko", short: "Mexiko", abbr: "MEX", colors: ["#006847", "#CE1126"], file: "mx.svg" },
+      { slug: "usa", name: "Vereinigte Staaten", short: "USA", tts: "U S A", abbr: "USA", colors: ["#0A3161", "#B31942"], file: "us.svg" },
+      { slug: "japan", name: "Japan", short: "Japan", abbr: "JPN", colors: ["#FFFFFF", "#BC002D"], file: "jp.svg" },
+      { slug: "suedkorea", name: "Südkorea", short: "Südkorea", abbr: "KOR", colors: ["#CD2E3A", "#0047A0"], file: "kr.svg" },
+      { slug: "oesterreich", name: "Österreich", short: "Österreich", abbr: "AUT", colors: ["#C8102E", "#FFFFFF"], file: "at.svg" },
+      { slug: "schweiz", name: "Schweiz", short: "Schweiz", abbr: "SUI", colors: ["#DA291C", "#FFFFFF"], file: "ch.svg" },
+      { slug: "daenemark", name: "Dänemark", short: "Dänemark", abbr: "DEN", colors: ["#C8102E", "#FFFFFF"], file: "dk.svg" },
+      { slug: "schweden", name: "Schweden", short: "Schweden", abbr: "SWE", colors: ["#006AA7", "#FECC02"], file: "se.svg" },
+      { slug: "polen", name: "Polen", short: "Polen", abbr: "POL", colors: ["#FFFFFF", "#DC143C"], file: "pl.svg" },
+      { slug: "tuerkei", name: "Türkei", short: "Türkei", abbr: "TUR", colors: ["#E30A17", "#FFFFFF"], file: "tr.svg" },
+      { slug: "marokko", name: "Marokko", short: "Marokko", abbr: "MAR", colors: ["#C1272D", "#006233"], file: "ma.svg" },
+      { slug: "senegal", name: "Senegal", short: "Senegal", abbr: "SEN", colors: ["#00853F", "#FDEF42"], file: "sn.svg" },
+      { slug: "kolumbien", name: "Kolumbien", short: "Kolumbien", abbr: "COL", colors: ["#FCD116", "#003893"], file: "co.svg" },
+    ]
   }
 };

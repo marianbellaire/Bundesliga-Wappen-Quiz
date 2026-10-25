@@ -8,13 +8,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fußball Quiz">
 <title>Fußball Quiz</title>
-<link rel="manifest" href="manifest.json?v=38">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=38">
-<link rel="icon" href="icons/icon-192.png?v=38">
+<link rel="manifest" href="manifest.json?v=39">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=39">
+<link rel="icon" href="icons/icon-192.png?v=39">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=38">
+<link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body>
 
@@ -65,6 +65,10 @@
       <button id="mode-legenden" class="mode-tile" type="button">
         <img src="logos/Legenden/beckenbauer.png" alt="">
         <span class="mode-label">Legenden</span>
+      </button>
+      <button id="mode-nationen" class="mode-tile" type="button">
+        <img src="logos/Nationen/de.svg" alt="">
+        <span class="mode-label">Nationen</span>
       </button>
     </div>
   </div>
@@ -145,6 +149,7 @@
     <button class="filter-btn" type="button" data-filter="2bundesliga">2. Bundesliga</button>
     <button class="filter-btn" type="button" data-filter="3liga">3. Liga</button>
     <button class="filter-btn" type="button" data-filter="international">International</button>
+    <button class="filter-btn" type="button" data-filter="nationen">Nationen</button>
   </div>
 
   <div class="crest-stage">
@@ -178,14 +183,14 @@
   </div>
 </section>
 
-<!-- WICHTIG: die Versionsnummer (?v=38) bei jeder Änderung an einer dieser
+<!-- WICHTIG: die Versionsnummer (?v=39) bei jeder Änderung an einer dieser
      Dateien (oder an styles.css/manifest.json/den Icons oben im <head>)
      um 1 hochzählen – das erzwingt frisches Laden trotz Service-Worker-
      Cache, auch wenn dieser selbst noch nicht aktualisiert wurde. Gleiche
      Nummer auch in manifest.json (icons) und service-worker.js
      (APP_SHELL) mitziehen. -->
-<script src="data.js?v=38"></script>
-<script src="icons.js?v=38"></script>
-<script src="app.js?v=38"></script>
+<script src="data.js?v=39"></script>
+<script src="icons.js?v=39"></script>
+<script src="app.js?v=39"></script>
 </body>
 </html>
